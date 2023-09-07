@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:15-alpine'
+    environment:
+      - 'POSTGRES_USER=merch'
+      - 'POSTGRES_PASSWORD=merch2023!'
+      - 'POSTGRES_DB=merchandise'
+    ports:
+      - '54321:5432'
