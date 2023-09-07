@@ -1,70 +1,70 @@
-CREATE TABLE Users (
-    UserID SERIAL PRIMARY KEY,
-    Username VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) UNIQUE NOT NULL,
-    Password VARCHAR(255) NOT NULL,
-    UserType VARCHAR(50) NOT NULL,
-    DateRegistered TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    user_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_type VARCHAR(50) NOT NULL,
+    date_registered TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Categories (
-    CategoryID SERIAL PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    Description TEXT
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL,
+    description TEXT
 );
 
-CREATE TABLE Products (
-    ProductID SERIAL PRIMARY KEY,
-    SellerID INTEGER REFERENCES Users(UserID),
-    CategoryID INTEGER REFERENCES Categories(CategoryID),
-    ProductName VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Price DECIMAL(10,2) NOT NULL,
-    StockQuantity INTEGER NOT NULL,
-    ImageURL VARCHAR(500)
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    seller_id INTEGER REFERENCES users(user_id),
+    category_id INTEGER REFERENCES categories(category_id),
+    product_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    stock_quantity INTEGER NOT NULL,
+    image_url VARCHAR(500)
 );
 
-CREATE TABLE Addresses (
-    AddressID SERIAL PRIMARY KEY,
-    UserID INTEGER REFERENCES Users(UserID),
-    Street VARCHAR(255) NOT NULL,
-    City VARCHAR(100) NOT NULL,
-    State VARCHAR(100),
-    ZipCode VARCHAR(50),
-    Country VARCHAR(100) NOT NULL
+CREATE TABLE addresses (
+    address_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    street VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100),
+    zip_code VARCHAR(50),
+    country VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Payments (
-    PaymentID SERIAL PRIMARY KEY,
-    Amount DECIMAL(10,2) NOT NULL,
-    PaymentMethod VARCHAR(255) NOT NULL,
-    DatePaid TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PaymentStatus VARCHAR(50) NOT NULL
+CREATE TABLE payments (
+    payment_id SERIAL PRIMARY KEY,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_method VARCHAR(255) NOT NULL,
+    date_paid TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_status VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Orders (
-    OrderID SERIAL PRIMARY KEY,
-    BuyerID INTEGER REFERENCES Users(UserID),
-    DatePlaced TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    TotalAmount DECIMAL(10,2) NOT NULL,
-    ShippingAddressID INTEGER REFERENCES Addresses(AddressID),
-    BillingAddressID INTEGER REFERENCES Addresses(AddressID),
-    PaymentID INTEGER REFERENCES Payments(PaymentID)
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    buyer_id INTEGER REFERENCES users(user_id),
+    date_placed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10,2) NOT NULL,
+    shipping_address_id INTEGER REFERENCES addresses(address_id),
+    billing_address_id INTEGER REFERENCES addresses(address_id),
+    payment_id INTEGER REFERENCES payments(payment_id)
 );
 
-CREATE TABLE OrderDetails (
-    OrderDetailID SERIAL PRIMARY KEY,
-    OrderID INTEGER REFERENCES Orders(OrderID),
-    ProductID INTEGER REFERENCES Products(ProductID),
-    Quantity INTEGER NOT NULL,
-    SubTotal DECIMAL(10,2) NOT NULL
+CREATE TABLE order_details (
+    order_detail_id SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders(order_id),
+    product_id INTEGER REFERENCES products(product_id),
+    quantity INTEGER NOT NULL,
+    sub_total DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE Reviews (
-    ReviewID SERIAL PRIMARY KEY,
-    ProductID INTEGER REFERENCES Products(ProductID),
-    UserID INTEGER REFERENCES Users(UserID),
-    Rating INTEGER CHECK (Rating >= 1 AND Rating <= 5),
-    Comment TEXT,
-    DatePosted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    product_id INTEGER REFERENCES products(product_id),
+    user_id INTEGER REFERENCES users(user_id),
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    date_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:54321/merchandise
+    username: merch
+    password: merch2023!
+
+  flyway:
+    baseline-on-migrate: true
