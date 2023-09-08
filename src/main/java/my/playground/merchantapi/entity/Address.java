@@ -1,4 +1,4 @@
-package my.playground.merchantapi.model;
+package my.playground.merchantapi.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

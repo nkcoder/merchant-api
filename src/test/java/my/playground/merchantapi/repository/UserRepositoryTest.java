@@ -1,6 +1,6 @@
 package my.playground.merchantapi.repository;
 
-import my.playground.merchantapi.model.User;
+import my.playground.merchantapi.entity.UserEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class UserRepositoryTest {
 
     @Test
     public void shouldFindUserByEmail() {
-        User newUser = new User(
+        UserEntity newUser = new UserEntity(
                 "Daniel",
                 "daniel@gmail.com",
                 "PassW0rd!",
@@ -35,10 +35,10 @@ public class UserRepositoryTest {
         );
         userRepository.save(newUser);
 
-        Optional<User> maybeUser = userRepository.findByEmail("daniel@gmail.com");
+        Optional<UserEntity> maybeUser = userRepository.findByEmail("daniel@gmail.com");
         assertTrue(maybeUser.isPresent());
 
-        User userFound = maybeUser.get();
+        UserEntity userFound = maybeUser.get();
         assertEquals("Daniel", userFound.getUserName());
         assertEquals("Admin", userFound.getUserType());
     }

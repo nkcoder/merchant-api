@@ -1,4 +1,4 @@
-package my.playground.merchantapi.model;
+package my.playground.merchantapi.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table("USERS")
 @RequiredArgsConstructor
 @Getter
-public class User {
+public class UserEntity {
     @Id
     @Setter
     private Long userId;

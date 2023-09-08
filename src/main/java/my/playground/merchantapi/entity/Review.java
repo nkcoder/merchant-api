@@ -1,4 +1,4 @@
-package my.playground.merchantapi.model;
+package my.playground.merchantapi.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,17 +6,18 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Table("order_details")
+@Table("reviews")
 @Getter
 @RequiredArgsConstructor
-public class OrderDetail {
+public class Review {
     @Id
     @Setter
-    private Long orderDetailId;
-    private final Long orderId;
+    private Long reviewId;
     private final Long productId;
-    private final Integer quantity;
-    private final BigDecimal subTotal;
+    private final Long userId;
+    private final Integer rating;
+    private final String comment;
+    private final LocalDateTime datePosted;
 }
