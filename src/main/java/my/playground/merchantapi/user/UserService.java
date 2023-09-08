@@ -14,9 +14,9 @@ public class UserService {
   private final UserRepository userRepository;
 
   public User register(UserRegistrationReq registrationReq) {
-    UserEntity userEntity = new UserEntity(registrationReq.getUserName(),
-        registrationReq.getEmail(), encryptPassword(registrationReq.getPassword()),
-        registrationReq.getUserType(), LocalDateTime.now());
+    UserEntity userEntity = new UserEntity(registrationReq.userName(),
+        registrationReq.email(), encryptPassword(registrationReq.password()),
+        registrationReq.userType(), LocalDateTime.now());
     UserEntity userSaved = userRepository.save(userEntity);
     return new User(userSaved.getUserId(), userSaved.getUserName(), userSaved.getEmail(),
         userSaved.getPassword(), userSaved.getUserType(), userSaved.getDateRegistered());

@@ -3,7 +3,6 @@ package my.playground.merchantapi.user;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,8 +26,8 @@ public class UserControllerTest {
   private UserService userService;
 
   @Test
-  public void testRegisterUser() throws Exception {
-    User user = new User(1L, "testUser", "test@email.com", null, "DEFAULT_USER_TYPE",
+  public void shouldRegisterUser() throws Exception {
+    User user = new User(1L, "testUser", "test@email.com", null, "Admin",
         LocalDateTime.now());
 
     when(userService.register(any(UserRegistrationReq.class))).thenReturn(user);
@@ -38,11 +37,40 @@ public class UserControllerTest {
             .content("""
                 {"userName": "testUser", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
                 """))
-        .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.userId").value(1L))
         .andExpect(jsonPath("$.userName").value("testUser"))
         .andExpect(jsonPath("$.email").value("test@email.com"));
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenUserEmailIsInvalid() throws Exception {
+    mockMvc.perform(post("/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {"userName": "testUser", "email": "test.email", "password": "testPass", "userType": "Admin"}
+                """))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenUserNameIsTooShort() throws Exception {
+    mockMvc.perform(post("/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {"userName": "sa", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
+                """))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenPasswordIsTooShort() throws Exception {
+    mockMvc.perform(post("/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {"userName": "testUser", "email": "test@email.com", "password": "test", "userType": "Admin"}
+                """))
+        .andExpect(status().isBadRequest());
   }
 }
 
