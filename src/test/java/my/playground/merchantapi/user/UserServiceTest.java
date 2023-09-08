@@ -2,11 +2,13 @@ package my.playground.merchantapi.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import my.playground.merchantapi.entity.UserEntity;
+import my.playground.merchantapi.infrastructure.PasswordEncryption;
 import my.playground.merchantapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +30,21 @@ public class UserServiceTest {
     UserRegistrationReq registrationReq = new UserRegistrationReq("testUser", "test@email.com",
         "testPass", "DEFAULT_USER_TYPE");
 
-    UserEntity mockUserEntity = new UserEntity(registrationReq.userName(),
-        registrationReq.email(), "mockPassword",
-        registrationReq.userType(), LocalDateTime.now());
+    UserEntity mockUserEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
+        PasswordEncryption.encrypt(registrationReq.password()), registrationReq.userType(),
+        LocalDateTime.now());
 
     when(userRepository.save(any(UserEntity.class))).thenReturn(mockUserEntity);
 
     // When
-    User result = userService.register(registrationReq);
+    User registeredUser = userService.register(registrationReq);
 
     // Then
-    assertNotNull(result);
-    assertEquals("testUser", result.userName());
-    assertEquals("test@email.com", result.email());
-    assertNotNull(result.password());  // the password should be encrypted
-    assertEquals("DEFAULT_USER_TYPE", result.userType());
+    assertNotNull(registeredUser);
+    assertEquals("testUser", registeredUser.userName());
+    assertEquals("test@email.com", registeredUser.email());
+    assertTrue(PasswordEncryption.check(registrationReq.password(), registeredUser.password()));
+    assertEquals("DEFAULT_USER_TYPE", registeredUser.userType());
   }
 
 }
