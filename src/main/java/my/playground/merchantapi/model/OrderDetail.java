@@ -14,9 +14,9 @@ import java.math.BigDecimal;
 public class OrderDetail {
     @Id
     @Setter
-    private Long orderDetailID;
-    private final Long orderID;
-    private final Long productID;
+    private Long orderDetailId;
+    private final Long orderId;
+    private final Long productId;
     private final Integer quantity;
     private final BigDecimal subTotal;
 }

@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 public class Order {
     @Id
     @Setter
-    private final Long orderID;
-    private final Long buyerID;
+    private final Long orderId;
+    private final Long buyerId;
     private final LocalDateTime datePlaced;
     private final BigDecimal totalAmount;
-    private final Long shippingAddressID;
-    private final Long billingAddressID;
-    private final Long paymentID;
+    private final Long shippingAddressId;
+    private final Long billingAddressId;
+    private final Long paymentId;
 }

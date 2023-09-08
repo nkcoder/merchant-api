@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Category {
     @Id
     @Setter
-    private Long categoryID;
+    private Long categoryId;
     private final String categoryName;
     private final String description;
 }

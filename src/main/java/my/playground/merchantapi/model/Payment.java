@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     @Setter
-    private Long paymentID;
+    private Long paymentId;
     private final BigDecimal amount;
     private final String paymentMethod;
     private final LocalDateTime datePaid;

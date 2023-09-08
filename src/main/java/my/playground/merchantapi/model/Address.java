@@ -12,8 +12,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Address {
     @Id
     @Setter
-    private Long addressID;
-    private final Long userID;
+    private Long addressId;
+    private final Long userId;
     private final String street;
     private final String city;
     private final String state;

@@ -14,9 +14,9 @@ import java.math.BigDecimal;
 public class Product {
     @Id
     @Setter
-    private Long productID;
-    private final Long sellerID;   // For simplicity, just the ID. Use Join for complex queries.
-    private final Long categoryID; // Similarly, just the ID here.
+    private Long productId;
+    private final Long sellerId;   // For simplicity, just the ID. Use Join for complex queries.
+    private final Long categoryId; // Similarly, just the ID here.
     private final String productName;
     private final String description;
     private final BigDecimal price;

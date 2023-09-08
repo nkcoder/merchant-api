@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class Review {
     @Id
     @Setter
-    private Long reviewID;
-    private final Long productID;
-    private final Long userID;
+    private Long reviewId;
+    private final Long productId;
+    private final Long userId;
     private final Integer rating;
     private final String comment;
     private final LocalDateTime datePosted;
