@@ -9,6 +9,7 @@
 - [x] Spring Security
 - [x] Flyway
 - [ ] JWT
+- [ ] Dockerise
 
 
 ### APIs
@@ -16,3 +17,5 @@
 - [ ] Users
   - [x] register
   - [ ] login
+  - [ ] update
+  - [ ] delete
