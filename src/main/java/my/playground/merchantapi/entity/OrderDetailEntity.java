@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Table("order_details")
 @Getter
 @RequiredArgsConstructor
-public class OrderDetail {
+public class OrderDetailEntity {
     @Id
     @Setter
     private Long orderDetailId;

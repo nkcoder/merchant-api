@@ -6,17 +6,14 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("addresses")
+@Table("categories")
 @Getter
 @RequiredArgsConstructor
-public class Address {
+public class CategoryEntity {
     @Id
     @Setter
-    private Long addressId;
-    private final Long userId;
-    private final String street;
-    private final String city;
-    private final String state;
-    private final String zipCode;
-    private final String country;
+    private Long categoryId;
+    private final String categoryName;
+    private final String description;
 }
+

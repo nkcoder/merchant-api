@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Table("products")
 @Getter
 @RequiredArgsConstructor
-public class Product {
+public class ProductEntity {
     @Id
     @Setter
     private Long productId;

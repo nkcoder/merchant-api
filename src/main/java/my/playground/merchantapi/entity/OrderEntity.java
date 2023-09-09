@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Table("orders")
 @Getter
 @RequiredArgsConstructor
-public class Order {
+public class OrderEntity {
     @Id
     @Setter
-    private final Long orderId;
+    private Long orderId;
     private final Long buyerId;
     private final LocalDateTime datePlaced;
     private final BigDecimal totalAmount;

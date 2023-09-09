@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class UserServiceTest {
   private UserRepository userRepository;
 
   @Test
-  public void testRegister() {
+  public void shouldRegisterUser() {
     // Given
     UserRegistrationReq registrationReq = new UserRegistrationReq("testUser", "test@email.com",
         "testPass", "DEFAULT_USER_TYPE");
@@ -45,6 +46,7 @@ public class UserServiceTest {
     assertEquals("test@email.com", registeredUser.email());
     assertTrue(PasswordEncryption.check(registrationReq.password(), registeredUser.password()));
     assertEquals("DEFAULT_USER_TYPE", registeredUser.userType());
+    verify(userRepository).save(any(UserEntity.class));
   }
 
 }

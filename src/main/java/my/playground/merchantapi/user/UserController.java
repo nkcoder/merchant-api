@@ -20,6 +20,6 @@ public class UserController {
   public ResponseEntity<User> registerUser(
       @RequestBody @Valid UserRegistrationReq registrationReq) {
     User registeredUser = userService.register(registrationReq);
-    return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    return new ResponseEntity<>(registeredUser.shadowPassword(), HttpStatus.CREATED);
   }
 }

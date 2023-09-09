@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table("payments")
 @Getter
 @RequiredArgsConstructor
-public class Payment {
+public class PaymentEntity {
     @Id
     @Setter
     private Long paymentId;
