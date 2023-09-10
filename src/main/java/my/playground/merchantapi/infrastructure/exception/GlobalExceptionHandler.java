@@ -21,6 +21,14 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(value = {UserNotFoundException.class})
+  public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
+    logger.error("User not found", ex);
+    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+        System.currentTimeMillis());
+    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(value = {InvalidCredentialException.class})
   public ResponseEntity<ApiError> handleInvalidCredential(InvalidCredentialException ex) {
     logger.error("Invalid credential exception", ex);

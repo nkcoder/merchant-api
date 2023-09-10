@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import my.playground.merchantapi.entity.UserEntity;
+import my.playground.merchantapi.infrastructure.exception.UserNotFoundException;
 import my.playground.merchantapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -88,12 +89,20 @@ public class UserServiceTest {
         new UserEntity("newName", "newEmail@email.com", "newpassword", "admin",
             LocalDateTime.now()));
 
-    User userToUpdate = new User(1L, "name", "email@test.com", "pwd", "USER", LocalDateTime.now());
-    User updatedUser = userService.updateUser(userId, userToUpdate);
+    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd", "USER");
+    User updatedUser = userService.updateUser(userId, updateReq);
 
     assertNotNull(updatedUser);
     assertEquals("newName", updatedUser.userName());
     assertEquals("newEmail@email.com", updatedUser.email());
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenUserNotFound() {
+    Long userId = 2L;
+    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd", "USER");
+    assertThrows(UserNotFoundException.class, () -> userService.updateUser(userId, updateReq));
   }
 
 }

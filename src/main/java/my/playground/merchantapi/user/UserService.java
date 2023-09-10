@@ -36,10 +36,11 @@ public class UserService implements UserDetailsService {
         .orElseThrow(() -> new UsernameNotFoundException("user not exist"));
   }
 
-  public User updateUser(Long userId, User user) {
+  public User updateUser(Long userId, UserUpdateReq updateReq) {
     UserEntity newEntity = userRepository.findById(userId).map(existingUser -> {
-      UserEntity newUser = new UserEntity(user.userName(), user.email(), user.password(),
-          user.userType(), existingUser.getDateRegistered());
+      UserEntity newUser = new UserEntity(updateReq.userName(), updateReq.email(),
+          updateReq.password(),
+          updateReq.userType(), existingUser.getDateRegistered());
       newUser.setUserId(userId);
       return newUser;
     }).orElseThrow(() -> new UserNotFoundException("User doesn't exist: " + userId));

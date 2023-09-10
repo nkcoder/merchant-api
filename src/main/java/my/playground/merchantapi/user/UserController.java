@@ -4,7 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -21,8 +26,9 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-    User updatedUser = userService.updateUser(id, user);
+  public ResponseEntity<User> updateUser(@PathVariable Long id,
+      @RequestBody @Valid UserUpdateReq updateReq) {
+    User updatedUser = userService.updateUser(id, updateReq);
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 }
