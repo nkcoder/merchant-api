@@ -34,15 +34,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     setFilterProcessesUrl("/auth/login");
   }
 
+  /*
+  The UsernamePasswordAuthenticationFilter by default attempts to retrieve the username and
+  password from request parameters. This is generally suitable for traditional form-based
+  login mechanisms.
+     return super.attemptAuthentication(request, response);
+ */
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
       HttpServletResponse response) throws AuthenticationException {
-    /*
-      The UsernamePasswordAuthenticationFilter by default attempts to retrieve the username and
-      password from request parameters. This is generally suitable for traditional form-based
-      login mechanisms.
-         return super.attemptAuthentication(request, response);
-     */
     try {
       LoginRequest loginRequest = jsonUtil.readValue(request.getInputStream(), LoginRequest.class);
       // Create the auth token using the parsed data
