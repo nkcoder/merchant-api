@@ -61,9 +61,8 @@ public class UserServiceTest {
   @Test
   public void shouldLoadUserByName() {
     String username = "testUser";
-    Optional<UserEntity> optionalUser = Optional.of(new UserEntity(
-        username, "test@email.com", "testPass", "ADMIN", LocalDateTime.now()
-    ));
+    Optional<UserEntity> optionalUser = Optional.of(
+        new UserEntity(username, "test@email.com", "testPass", "ADMIN", LocalDateTime.now()));
     when(userRepository.findByUserName(username)).thenReturn(optionalUser);
 
     UserDetails userDetails = userService.loadUserByUsername(username);
@@ -78,6 +77,23 @@ public class UserServiceTest {
     when(userRepository.findByUserName(username)).thenReturn(optionalUser);
 
     assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername(username));
+  }
+
+  @Test
+  public void shouldReturnUpdatedUser() {
+    Long userId = 1L;
+    when(userRepository.findById(userId)).thenReturn(
+        Optional.of(new UserEntity("name", "email", "password", "admin", LocalDateTime.now())));
+    when(userRepository.save(any(UserEntity.class))).thenReturn(
+        new UserEntity("newName", "newEmail@email.com", "newpassword", "admin",
+            LocalDateTime.now()));
+
+    User userToUpdate = new User(1L, "name", "email@test.com", "pwd", "USER", LocalDateTime.now());
+    User updatedUser = userService.updateUser(userId, userToUpdate);
+
+    assertNotNull(updatedUser);
+    assertEquals("newName", updatedUser.userName());
+    assertEquals("newEmail@email.com", updatedUser.email());
   }
 
 }

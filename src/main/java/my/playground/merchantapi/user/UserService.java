@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import my.playground.merchantapi.entity.UserEntity;
+import my.playground.merchantapi.infrastructure.exception.UserNotFoundException;
 import my.playground.merchantapi.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,11 +30,23 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userRepository.findByUserName(username)
-        .map(userEntity -> new org.springframework.security.core.userdetails.User(
-            userEntity.getUserName(), userEntity.getPassword(),
-            List.of()))
+    return userRepository.findByUserName(username).map(
+            userEntity -> new org.springframework.security.core.userdetails.User(
+                userEntity.getUserName(), userEntity.getPassword(), List.of()))
         .orElseThrow(() -> new UsernameNotFoundException("user not exist"));
+  }
+
+  public User updateUser(Long userId, User user) {
+    UserEntity newEntity = userRepository.findById(userId).map(existingUser -> {
+      UserEntity newUser = new UserEntity(user.userName(), user.email(), user.password(),
+          user.userType(), existingUser.getDateRegistered());
+      newUser.setUserId(userId);
+      return newUser;
+    }).orElseThrow(() -> new UserNotFoundException("User doesn't exist: " + userId));
+
+    UserEntity updatedEntity = userRepository.save(newEntity);
+    return new User(userId, updatedEntity.getUserName(), updatedEntity.getEmail(), null,
+        updatedEntity.getUserType(), updatedEntity.getDateRegistered());
   }
 
 }
