@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-//@WebMvcTest(value = UserController.class, excludeAutoConfiguration = H2ConsoleAutoConfiguration.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
 public class UserControllerTest {
