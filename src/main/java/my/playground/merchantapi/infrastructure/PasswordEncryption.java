@@ -4,6 +4,7 @@ import my.playground.merchantapi.infrastructure.exception.InvalidArgumentExcepti
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.util.StringUtils;
 
+@Deprecated
 public class PasswordEncryption {
 
   public static String encrypt(String password) {

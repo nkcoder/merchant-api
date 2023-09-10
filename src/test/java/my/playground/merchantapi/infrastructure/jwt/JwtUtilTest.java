@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.jsonwebtoken.security.SignatureException;
-import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class JwtUtilTest {
     userDetails = new org.springframework.security.core.userdetails.User(
         "testUser",
         "testPass",
-        new ArrayList<>()
+        List.of()
     );
   }
 

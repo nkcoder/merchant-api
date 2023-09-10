@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 import my.playground.merchantapi.entity.UserEntity;
 import my.playground.merchantapi.infrastructure.PasswordEncryption;
 import my.playground.merchantapi.repository.UserRepository;
+import org.h2.command.dml.MergeUsing.When;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -25,14 +27,19 @@ public class UserServiceTest {
   @MockBean
   private UserRepository userRepository;
 
+  @MockBean
+  private PasswordEncoder passwordEncoder;
+
   @Test
   public void shouldRegisterUser() {
     // Given
     UserRegistrationReq registrationReq = new UserRegistrationReq("testUser", "test@email.com",
         "testPass", "DEFAULT_USER_TYPE");
 
+    when(passwordEncoder.encode(registrationReq.password())).thenReturn("encoded-password");
+
     UserEntity mockUserEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
-        PasswordEncryption.encrypt(registrationReq.password()), registrationReq.userType(),
+        passwordEncoder.encode(registrationReq.password()), registrationReq.userType(),
         LocalDateTime.now());
 
     when(userRepository.save(any(UserEntity.class))).thenReturn(mockUserEntity);
@@ -44,7 +51,7 @@ public class UserServiceTest {
     assertNotNull(registeredUser);
     assertEquals("testUser", registeredUser.userName());
     assertEquals("test@email.com", registeredUser.email());
-    assertTrue(PasswordEncryption.check(registrationReq.password(), registeredUser.password()));
+    assertEquals("encoded-password", registeredUser.password());
     assertEquals("DEFAULT_USER_TYPE", registeredUser.userType());
     verify(userRepository).save(any(UserEntity.class));
   }
