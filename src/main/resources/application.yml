@@ -15,5 +15,6 @@ jwt:
 
 logging:
   level:
-    root: debug
-    my.playground.merchantapi: debug
+    root: warn
+    org.springframework: INFO
+    my.playground.merchantapi: DEBUG

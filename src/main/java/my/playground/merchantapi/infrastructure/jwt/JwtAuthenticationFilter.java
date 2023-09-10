@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import my.playground.merchantapi.infrastructure.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
   private final JwtUtil jwtUtil;
   private final JsonUtil jsonUtil;
@@ -49,6 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       setDetails(request, authRequest);
       return this.getAuthenticationManager().authenticate(authRequest);
     } catch (IOException e) {
+      logger.error("Authenticate request error: {}", e.getMessage());
       throw new RuntimeException(e);
     }
   }

@@ -1,7 +1,7 @@
 package my.playground.merchantapi.infrastructure;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,17 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthenticationManagerConfig {
 
   private final UserDetailsService userDetailsService;
   private final PasswordEncoder passwordEncoder;
-
-  @Autowired
-  public AuthenticationManagerConfig(UserDetailsService userDetailsService,
-      PasswordEncoder passwordEncoder) {
-    this.userDetailsService = userDetailsService;
-    this.passwordEncoder = passwordEncoder;
-  }
 
   @Bean
   public AuthenticationManager authenticationManager() {

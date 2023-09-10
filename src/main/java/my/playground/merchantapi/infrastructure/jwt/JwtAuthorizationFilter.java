@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
   private final JwtUtil jwtUtil;
   private final UserDetailsService userDetailsService;
@@ -34,6 +37,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     String header = request.getHeader("Authorization");
 
     if (header == null || !header.startsWith("Bearer ")) {
+      logger.warn("No authorization info in the request header.");
       chain.doFilter(request, response);
       return;
     }
