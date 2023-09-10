@@ -9,9 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import my.playground.merchantapi.entity.UserEntity;
-import my.playground.merchantapi.infrastructure.PasswordEncryption;
 import my.playground.merchantapi.repository.UserRepository;
-import org.h2.command.dml.MergeUsing.When;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

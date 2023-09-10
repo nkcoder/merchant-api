@@ -22,7 +22,7 @@ public class WebSecurityConfigurer {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
-            authorize -> authorize.requestMatchers("/users/register").permitAll()
+            authorize -> authorize.requestMatchers("/users/register", "/auth/login").permitAll()
                 .anyRequest().authenticated());
     http.addFilter(authenticationFilter);
     http.addFilter(authorizationFilter);

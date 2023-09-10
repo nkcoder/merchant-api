@@ -3,6 +3,9 @@ package my.playground.merchantapi.infrastructure.jwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import my.playground.merchantapi.infrastructure.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,25 +18,39 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
+  private final JsonUtil jsonUtil;
 
   @Autowired
-  public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+  public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+      JsonUtil jsonUtil) {
     super(authenticationManager);
-    this.authenticationManager = authenticationManager;
     this.jwtUtil = jwtUtil;
-    setFilterProcessesUrl("/login");
+    this.jsonUtil = jsonUtil;
+    setFilterProcessesUrl("/auth/login");
   }
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
       HttpServletResponse response) throws AuthenticationException {
-    String username = request.getParameter("username");
-    String password = request.getParameter("password");
+    /*
+      The UsernamePasswordAuthenticationFilter by default attempts to retrieve the username and
+      password from request parameters. This is generally suitable for traditional form-based
+      login mechanisms.
+         return super.attemptAuthentication(request, response);
+     */
+    try {
+      LoginRequest loginRequest = jsonUtil.readValue(request.getInputStream(), LoginRequest.class);
+      // Create the auth token using the parsed data
+      UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+          loginRequest.username(), loginRequest.password(), Collections.emptyList());
 
-    return authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, password));
+      // Allow subclasses to set the "details" property
+      setDetails(request, authRequest);
+      return this.getAuthenticationManager().authenticate(authRequest);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -43,4 +60,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     String token = jwtUtil.generateToken(userDetails);
     response.addHeader("Authorization", "Bearer " + token);
   }
+
+  public record LoginRequest(String username, String password) {
+
+  }
+
 }
+
+
