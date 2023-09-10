@@ -8,7 +8,7 @@
 - [x] SpringBoot 3 (Spring 6)
 - [x] Spring Security
 - [x] Flyway
-- [ ] JWT
+- [x] JWT
 - [ ] Dockerise
 
 
@@ -16,10 +16,13 @@
 
 - [ ] Users
   - [x] register
-  - [ ] login
   - [ ] update
   - [ ] delete
+
+- [ ] Auth
+  - [x] login
 
 ### TODO
 
 - [ ] Refactor Controller tests from integration tests to unit tests
+- [ ] Refactor exception handling
