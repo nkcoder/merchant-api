@@ -25,7 +25,7 @@ public class JwtUtil {
         .setSubject(userDetails.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
-        .signWith(getSecretKey(secret))
+        .signWith(getSecretKey())
         .compact();
   }
 
@@ -48,7 +48,7 @@ public class JwtUtil {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder().setSigningKey(getSecretKey(secret)).build().parseClaimsJws(token)
+    return Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token)
         .getBody();
   }
 
@@ -56,7 +56,7 @@ public class JwtUtil {
     return extractExpiration(token).before(new Date());
   }
 
-  private SecretKey getSecretKey(String base64EncodedKey) {
+  private SecretKey getSecretKey() {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
   }
 }

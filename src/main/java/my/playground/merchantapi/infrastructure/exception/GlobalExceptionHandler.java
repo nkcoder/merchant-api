@@ -14,29 +14,37 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(value = {InvalidArgumentException.class})
-  public ResponseEntity<ErrorResponse> handleInvalidArgumentException(InvalidArgumentException ex) {
+  public ResponseEntity<ApiError> handleInvalidArgumentException(InvalidArgumentException ex) {
     logger.error("Invalid argument exception", ex);
-    ErrorResponse errorDetails = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
         System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(value = {InvalidCredentialException.class})
+  public ResponseEntity<ApiError> handleInvalidCredential(InvalidCredentialException ex) {
+    logger.error("Invalid credential exception", ex);
+    ApiError errorDetails = new ApiError(HttpStatus.FORBIDDEN.value(), ex.getMessage(),
+        System.currentTimeMillis());
+    return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+  }
+
   @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+  public ResponseEntity<ApiError> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex) {
     logger.error("Invalid method argument exception", ex);
     String message = ex.getBindingResult().getFieldErrors().stream()
         .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
         .reduce("", (x, y) -> x + "| " + y);
-    ErrorResponse errorDetails = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message,
+    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), message,
         System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleExceptions(Exception ex) {
+  public ResponseEntity<ApiError> handleExceptions(Exception ex) {
     logger.error("Exception occurred", ex);
-    ErrorResponse errorDetails = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    ApiError errorDetails = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
         ex.getMessage(), System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
   }
