@@ -10,7 +10,7 @@ spring:
 
 jwt:
   secret: bXlKV1Qtc2VjcmV0LWtleS0yMDIzLUFVLTAwOTEwLVh+IUAh
-  expiration: 3600
+  expiration: 36000
 
 logging:
   level:

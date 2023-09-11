@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import my.playground.onlineshop.entity.UserEntity;
-import my.playground.onlineshop.infrastructure.exception.UserNotFoundException;
 import my.playground.onlineshop.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

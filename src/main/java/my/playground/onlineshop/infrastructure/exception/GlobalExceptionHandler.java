@@ -1,6 +1,7 @@
 package my.playground.onlineshop.infrastructure.exception;
 
 import my.playground.onlineshop.product.ProductNotFoundException;
+import my.playground.onlineshop.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import my.playground.onlineshop.entity.UserEntity;
-import my.playground.onlineshop.infrastructure.exception.UserNotFoundException;
 import my.playground.onlineshop.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

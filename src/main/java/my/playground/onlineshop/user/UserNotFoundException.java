@@ -1,4 +1,4 @@
-package my.playground.onlineshop.infrastructure.exception;
+package my.playground.onlineshop.user;
 
 public class UserNotFoundException extends RuntimeException {
 
