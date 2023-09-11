@@ -2,10 +2,13 @@ package my.playground.merchantapi.product;
 
 import static my.playground.merchantapi.product.ProductMockFactory.newProductEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import my.playground.merchantapi.entity.ProductEntity;
@@ -27,10 +30,8 @@ public class ProductServiceTest {
 
   @Test
   public void shouldReturnListOfProducts() {
-    List<ProductEntity> productEntities = List.of(
-        newProductEntity("product1", "description1"),
-        newProductEntity("product2", "description2")
-    );
+    List<ProductEntity> productEntities = List.of(newProductEntity("product1", "description1"),
+        newProductEntity("product2", "description2"));
     when(productRepository.findAll()).thenReturn(productEntities);
 
     List<Product> products = productService.getAllProducts();
@@ -55,5 +56,17 @@ public class ProductServiceTest {
 
     Optional<Product> maybeProduct = productService.getProductById(productId);
     assertTrue(maybeProduct.isEmpty());
+  }
+
+  @Test
+  public void shouldAddProduct() {
+    AddProductRequest addProductRequest = new AddProductRequest(1L, 2L, "Product1", "best ever!",
+        BigDecimal.valueOf(100.0), 100, "test.jpg");
+    when(productRepository.save(any(ProductEntity.class))).thenReturn(
+        newProductEntity("Product1", "description"));
+
+    Product product = productService.addProduct(addProductRequest);
+    assertNotNull(product);
+    assertEquals("Product1", product.productName());
   }
 }

@@ -1,5 +1,6 @@
 package my.playground.merchantapi.infrastructure;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.io.IOException;
@@ -18,12 +19,20 @@ public class JsonUtil {
     objectMapper.registerModule(new ParameterNamesModule());
   }
 
-  public <T> T readValue(InputStream inputStream, Class<T> valueType) {
+  public <T> T fromJson(InputStream inputStream, Class<T> valueType) {
     try {
       return objectMapper.readValue(inputStream, valueType);
     } catch (IOException ex) {
       logger.error("Cannot deserialize data: {}", ex.getMessage());
       throw new RuntimeException("cannot read data to object", ex);
+    }
+  }
+
+  public <T> String toJson(T value) {
+    try {
+      return objectMapper.writeValueAsString(value);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
   }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import my.playground.merchantapi.entity.ProductEntity;
 import my.playground.merchantapi.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,4 +29,26 @@ public class ProductService {
             pe.getImageURL()));
   }
 
+  public Product addProduct(AddProductRequest addProductRequest) {
+    ProductEntity newProduct = new ProductEntity(
+        addProductRequest.sellerId(),
+        addProductRequest.categoryId(),
+        addProductRequest.productName(),
+        addProductRequest.description(),
+        addProductRequest.price(),
+        addProductRequest.stockQuantity(),
+        addProductRequest.imageUR()
+    );
+    ProductEntity savedProduct = productRepository.save(newProduct);
+    return new Product(
+        savedProduct.getProductId(),
+        savedProduct.getSellerId(),
+        savedProduct.getCategoryId(),
+        savedProduct.getProductName(),
+        savedProduct.getDescription(),
+        savedProduct.getPrice(),
+        savedProduct.getStockQuantity(),
+        savedProduct.getImageURL()
+    );
+  }
 }

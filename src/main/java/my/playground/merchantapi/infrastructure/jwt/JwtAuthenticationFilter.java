@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   public Authentication attemptAuthentication(HttpServletRequest request,
       HttpServletResponse response) throws AuthenticationException {
     try {
-      LoginRequest loginRequest = jsonUtil.readValue(request.getInputStream(), LoginRequest.class);
+      LoginRequest loginRequest = jsonUtil.fromJson(request.getInputStream(), LoginRequest.class);
       // Create the auth token using the parsed data
       UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
           loginRequest.username(), loginRequest.password(), Collections.emptyList());
