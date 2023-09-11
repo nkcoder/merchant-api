@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import my.playground.merchantapi.infrastructure.JsonUtil;
+import my.playground.merchantapi.infrastructure.exception.InvalidCredentialException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
       HttpServletResponse response) throws AuthenticationException {
+    logger.info("processing request: {}", request.getRequestURL());
     try {
       LoginRequest loginRequest = jsonUtil.fromJson(request.getInputStream(), LoginRequest.class);
       // Create the auth token using the parsed data
@@ -54,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       return this.getAuthenticationManager().authenticate(authRequest);
     } catch (IOException e) {
       logger.error("Authenticate request error: {}", e.getMessage());
-      throw new RuntimeException(e);
+      throw new InvalidCredentialException("Invalid token");
     }
   }
 

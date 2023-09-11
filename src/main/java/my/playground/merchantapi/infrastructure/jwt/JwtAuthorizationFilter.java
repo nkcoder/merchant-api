@@ -35,23 +35,23 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain chain) throws IOException, ServletException {
+    logger.info("processing request: {}", request.getRequestURL());
     String header = request.getHeader("Authorization");
 
     if (header == null || !header.startsWith("Bearer ")) {
-      logger.error("No authorization info in the request header.");
-      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+      logger.error("No authorization info in the request.");
+      chain.doFilter(request, response);
       return;
     }
 
     try {
       Authentication authentication = getAuthentication(request);
       SecurityContextHolder.getContext().setAuthentication(authentication);
+      chain.doFilter(request, response);
     } catch (Exception exception) {
-      logger.error("Authentication failed: {}", exception.getMessage());
+      logger.error("Authentication failed, message: {}", exception.getMessage());
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
-      return;
     }
-    chain.doFilter(request, response);
   }
 
   private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
