@@ -16,8 +16,19 @@
 
 - [ ] Users
   - [x] register
-  - [ ] update
+  - [x] update
   - [ ] delete
+
+- [ ] Products
+  - [ ] create a new product
+  - [ ] update a product
+  - [ ] delete a product
+  - [ ] find a product
+  - [ ] find all products
+
+- [ ] Orders
+  - [ ] create an order
+  - [ ] update and order
 
 - [ ] Auth
   - [x] login
@@ -26,3 +37,7 @@
 
 - [ ] Refactor Controller tests from integration tests to unit tests
 - [ ] Refactor exception handling
+- [ ] /auto scripts
+- [ ] dockerise
+- [ ] deploy to AWS (ECS fargate, RDS)
+- [ ] introduce VAVR and refactor in a functional programming way
