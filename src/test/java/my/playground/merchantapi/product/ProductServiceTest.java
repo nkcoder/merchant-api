@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -13,20 +12,20 @@ import java.util.List;
 import java.util.Optional;
 import my.playground.merchantapi.entity.ProductEntity;
 import my.playground.merchantapi.repository.ProductRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
-  private static ProductRepository productRepository;
+  @Mock
+  private ProductRepository productRepository;
 
-  private static ProductService productService;
-
-  @BeforeAll
-  public static void setup() {
-    productRepository = mock(ProductRepository.class);
-    productService = new ProductService(productRepository);
-  }
+  @InjectMocks
+  private ProductService productService;
 
   @Test
   public void shouldReturnListOfProducts() {

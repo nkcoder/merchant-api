@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,25 +12,24 @@ import java.util.Optional;
 import my.playground.merchantapi.entity.UserEntity;
 import my.playground.merchantapi.infrastructure.exception.UserNotFoundException;
 import my.playground.merchantapi.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-  private static UserRepository userRepository;
-  private static PasswordEncoder passwordEncoder;
-  private static UserService userService;
-
-  @BeforeAll
-  public static void setup() {
-    passwordEncoder = mock(BCryptPasswordEncoder.class);
-    userRepository = mock(UserRepository.class);
-    userService = new UserService(userRepository, passwordEncoder);
-  }
+  @Mock
+  private UserRepository userRepository;
+  @Mock
+  private PasswordEncoder passwordEncoder;
+  @InjectMocks
+  private UserService userService;
 
   @Test
   public void shouldRegisterUser() {
