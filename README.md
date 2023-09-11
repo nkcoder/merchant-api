@@ -37,7 +37,8 @@
 
 - [ ] Refactor Controller tests from integration tests to unit tests
 - [ ] Refactor exception handling
-- [ ] /auto scripts
-- [ ] dockerise
+- [x] /auto scripts
+- [x] dockerise
 - [ ] deploy to AWS (ECS fargate, RDS)
 - [ ] introduce VAVR and refactor in a functional programming way
+- [ ] encrypt the database secret

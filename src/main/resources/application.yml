@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:54321/merchandise
+    url: jdbc:postgresql://localhost:5432/merchandise
     username: merch
     password: merch2023!
 
@@ -16,4 +16,4 @@ logging:
   level:
     root: warn
     org.springframework: INFO
-    my.playground.merchantapi: DEBUG
+    my.playground.onlineshop: DEBUG
