@@ -9,7 +9,6 @@ spring:
 
 
 jwt:
-#  secret: myJWT-secret-key-2023-AU-00910-X~!@!
   secret: bXlKV1Qtc2VjcmV0LWtleS0yMDIzLUFVLTAwOTEwLVh+IUAh
   expiration: 3600
 
