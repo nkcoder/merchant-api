@@ -35,5 +35,3 @@ jobs:
 
       - name: Build and Test
         run: ./gradlew clean build
-
-# (Optional) Add steps for deployment, if you have an automated deployment process.

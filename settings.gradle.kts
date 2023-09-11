@@ -1,1 +1,1 @@
-rootProject.name = "merchant-api"
+rootProject.name = "online-shop-api"
