@@ -1,9 +1,9 @@
 INSERT INTO users(user_name, email, password, user_type, date_registered)
-VALUES ('Daniel', 'daniel@test.com', 'daniel.pwd', 'ADMIN', CURRENT_TIMESTAMP),
-       ('Jack', 'jack@test.com', 'jack.pwd', 'ADMIN', CURRENT_TIMESTAMP),
-       ('July', 'july@test.com', 'july.pwd', 'ADMIN', CURRENT_TIMESTAMP),
-       ('George', 'george@test.com', 'george.pwd', 'ADMIN', CURRENT_TIMESTAMP),
-       ('Susan', 'susan@test.com', 'susan.pwd', 'ADMIN', CURRENT_TIMESTAMP);
+VALUES ('Daniel', 'daniel@test.com', '$2a$10$G1veikDInr5jUC2CY5qr1eSND1A5l2sM7BH9Ml9d.nrGljW8tNOe6', 'ADMIN', CURRENT_TIMESTAMP),
+       ('Jack', 'jack@test.com', '$2a$10$NPIh1x7bcDayb.Tld/cCv.uoE6gzU1NW8u2KLHvraYYEkmiwFe0dK', 'ADMIN', CURRENT_TIMESTAMP),
+       ('July', 'july@test.com', '$2a$10$mHdQPGAfMAZyZFzSoT1LjeexMyv1UU6Us6cN7ZWO9k4Vs407ottva', 'ADMIN', CURRENT_TIMESTAMP),
+       ('George', 'george@test.com', '$2a$10$vtFlMl33E6U/ILatyRFcx.kskZyPueRbrFR/DlBBS6YsrKY6YYK9a', 'ADMIN', CURRENT_TIMESTAMP),
+       ('Susan', 'susan@test.com', '$2a$10$Kt3zwgMjCQ4g2ushvM0fm.wAfLusPzqFH0bO1ATnxH7CIMgK.kPRK', 'ADMIN', CURRENT_TIMESTAMP);
 
 INSERT INTO categories (category_name, description)
 VALUES ('Electronics', 'Camera, Cell Phones, Accessories...'),
