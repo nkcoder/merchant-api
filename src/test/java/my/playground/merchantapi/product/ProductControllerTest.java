@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,5 +39,22 @@ public class ProductControllerTest {
         .andExpect(jsonPath("$[1].productName").value("Product2"));
   }
 
+  @Test
+  public void getProductById_ShouldReturnProduct() throws Exception {
+    Product mockProduct = newProduct("Product1", "Description1");
+    when(productService.getProductById(1L)).thenReturn(Optional.of(mockProduct));
+
+    mockMvc.perform(get("/products/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.productName").value("Product1"));
+  }
+
+  @Test
+  public void getProductById_ShouldThrowBadRequest() throws Exception {
+    when(productService.getProductById(1L)).thenReturn(Optional.empty());
+
+    mockMvc.perform(get("/products/1"))
+        .andExpect(status().isBadRequest());
+  }
 
 }

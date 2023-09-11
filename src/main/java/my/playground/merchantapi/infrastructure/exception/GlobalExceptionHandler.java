@@ -1,5 +1,6 @@
 package my.playground.merchantapi.infrastructure.exception;
 
+import my.playground.merchantapi.product.ProductNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,14 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(value = {UserNotFoundException.class})
   public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
     logger.error("User not found", ex);
+    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+        System.currentTimeMillis());
+    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = {ProductNotFoundException.class})
+  public ResponseEntity<ApiError> handleProductNotFoundException(ProductNotFoundException ex) {
+    logger.error("Product not found", ex);
     ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
         System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
