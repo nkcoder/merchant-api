@@ -10,7 +10,6 @@ import my.playground.onlineshop.persistence.entity.PaymentEntity;
 import my.playground.onlineshop.product.Product;
 import my.playground.onlineshop.product.ProductNotFoundException;
 import my.playground.onlineshop.product.ProductService;
-import my.playground.onlineshop.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +20,10 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final PaymentRepository paymentRepository;
   private final ProductService productService;
-  private final UserService userService;
 
   @Transactional
   public Order createOrder(CreateOrderReq createOrderReq) {
-    List<Product> orderProducts = updateProduct(createOrderReq.items());
+    List<Product> orderProducts = updateProductStocks(createOrderReq.items());
     Long paymentId = savePayment(createOrderReq.payment());
 
     OrderEntity orderEntity = new OrderEntity(createOrderReq.buyerId(), createOrderReq.datePlaced(),
@@ -43,7 +41,7 @@ public class OrderService {
     );
   }
 
-  private List<Product> updateProduct(List<OrderItem> orderItems) {
+  private List<Product> updateProductStocks(List<OrderItem> orderItems) {
     List<Product> orderProducts = new ArrayList<>();
     for (OrderItem item : orderItems) {
       Product product = productService.getProductById(item.productId())
