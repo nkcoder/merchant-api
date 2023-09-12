@@ -1,6 +1,13 @@
 > This is a playground project just for refreshing my knowledge on Java tech stack.
 
-## Merchandise backend APIs
+## Online Shop (simple) backend APIs
+
+## OpenAPI document
+
+- [OpenAPI doc](http://localhost:8080/v3/api-docs)
+
+- [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+  - ![API](./swagger-ui.png)
 
 ### Tech Stack
 
@@ -9,7 +16,8 @@
 - [x] Spring Security
 - [x] Flyway
 - [x] JWT
-- [ ] Dockerise
+- [x] Dockerise
+- [x] OpenAPI 3
 
 
 ### APIs
@@ -20,14 +28,15 @@
   - [ ] delete
 
 - [ ] Products
-  - [ ] create a new product
+  - [x] create a new product
   - [ ] update a product
   - [ ] delete a product
-  - [ ] find a product
-  - [ ] find all products
+  - [x] find a product
+  - [x] find all products
 
 - [ ] Orders
   - [ ] create an order
+  - [ ] get an order
   - [ ] update and order
 
 - [ ] Auth
@@ -35,10 +44,11 @@
 
 ### TODO
 
-- [ ] Refactor Controller tests from integration tests to unit tests
-- [ ] Refactor exception handling
 - [x] /auto scripts
 - [x] dockerise
-- [ ] deploy to AWS (ECS fargate, RDS)
+- [x] CI (Github Actions)
+- [ ] Refactor Controller tests from integration tests to unit tests
+- [ ] Refactor exception handling
 - [ ] introduce VAVR and refactor in a functional programming way
 - [ ] encrypt the database secret
+- [ ] support GraphQL

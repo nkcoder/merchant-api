@@ -35,7 +35,7 @@ public class UserControllerTest {
 
     when(userService.register(any(UserRegistrationReq.class))).thenReturn(user);
 
-    mockMvc.perform(post("/users/register").contentType(MediaType.APPLICATION_JSON).content("""
+    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
             {"userName": "testUser", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
             """)).andExpect(status().isCreated()).andExpect(jsonPath("$.userId").value(1L))
         .andExpect(jsonPath("$.userName").value("testUser"))
@@ -44,21 +44,21 @@ public class UserControllerTest {
 
   @Test
   public void shouldReturnBadRequestWhenUserEmailIsInvalid() throws Exception {
-    mockMvc.perform(post("/users/register").contentType(MediaType.APPLICATION_JSON).content("""
+    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
         {"userName": "testUser", "email": "test.email", "password": "testPass", "userType": "Admin"}
         """)).andExpect(status().isBadRequest());
   }
 
   @Test
   public void shouldReturnBadRequestWhenUserNameIsTooShort() throws Exception {
-    mockMvc.perform(post("/users/register").contentType(MediaType.APPLICATION_JSON).content("""
+    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
         {"userName": "sa", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
         """)).andExpect(status().isBadRequest());
   }
 
   @Test
   public void shouldReturnBadRequestWhenPasswordIsTooShort() throws Exception {
-    mockMvc.perform(post("/users/register").contentType(MediaType.APPLICATION_JSON).content("""
+    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
         {"userName": "testUser", "email": "test@email.com", "password": "test", "userType": "Admin"}
         """)).andExpect(status().isBadRequest());
   }

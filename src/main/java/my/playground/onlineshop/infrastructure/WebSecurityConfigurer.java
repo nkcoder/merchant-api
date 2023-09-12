@@ -20,11 +20,10 @@ public class WebSecurityConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
+    http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
             authorize -> authorize.requestMatchers("/users/register", "/auth/login").permitAll()
-                .anyRequest().authenticated())
-        .addFilter(authenticationFilter)
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated()).addFilter(authenticationFilter)
         .addFilter(authorizationFilter);
     return http.build();
   }

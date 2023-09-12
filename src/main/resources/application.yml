@@ -17,3 +17,7 @@ logging:
     root: warn
     org.springframework: INFO
     my.playground.onlineshop: DEBUG
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method

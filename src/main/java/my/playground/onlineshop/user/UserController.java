@@ -1,5 +1,6 @@
 package my.playground.onlineshop.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -16,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Tag(name = "Users")
 public class UserController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   private final UserService userService;
 
-  @PostMapping("/register")
+  @PostMapping("")
   public ResponseEntity<User> registerUser(
       @RequestBody @Valid UserRegistrationReq registrationReq) {
     logger.info("Received register request.");
