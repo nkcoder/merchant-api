@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import my.playground.onlineshop.entity.ProductEntity;
-import my.playground.onlineshop.repository.ProductRepository;
+import my.playground.onlineshop.persistence.ProductRepository;
+import my.playground.onlineshop.persistence.entity.ProductEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,25 +30,28 @@ public class ProductService {
   }
 
   public Product addProduct(AddProductRequest addProductRequest) {
-    ProductEntity newProduct = new ProductEntity(
-        addProductRequest.sellerId(),
-        addProductRequest.categoryId(),
-        addProductRequest.productName(),
-        addProductRequest.description(),
-        addProductRequest.price(),
-        addProductRequest.stockQuantity(),
-        addProductRequest.imageURL()
-    );
+    ProductEntity newProduct = new ProductEntity(addProductRequest.sellerId(),
+        addProductRequest.categoryId(), addProductRequest.productName(),
+        addProductRequest.description(), addProductRequest.price(),
+        addProductRequest.stockQuantity(), addProductRequest.imageURL());
     ProductEntity savedProduct = productRepository.save(newProduct);
-    return new Product(
-        savedProduct.getProductId(),
-        savedProduct.getSellerId(),
-        savedProduct.getCategoryId(),
-        savedProduct.getProductName(),
-        savedProduct.getDescription(),
-        savedProduct.getPrice(),
-        savedProduct.getStockQuantity(),
-        savedProduct.getImageURL()
-    );
+    return new Product(savedProduct.getProductId(), savedProduct.getSellerId(),
+        savedProduct.getCategoryId(), savedProduct.getProductName(), savedProduct.getDescription(),
+        savedProduct.getPrice(), savedProduct.getStockQuantity(), savedProduct.getImageURL());
+  }
+
+  public Product updateProduct(Long productId, Product product) {
+    ProductEntity updatedProduct = productRepository.findById(productId).map(pe -> {
+      ProductEntity newProduct = new ProductEntity(product.sellerId(), product.categoryId(),
+          product.productName(), product.description(), product.price(), product.stockQuantity(),
+          product.imageURL());
+      newProduct.setProductId(pe.getProductId());
+      return newProduct;
+    }).orElseThrow(() -> new ProductNotFoundException("productId: " + productId));
+
+    ProductEntity savedProduct = productRepository.save(updatedProduct);
+    return new Product(savedProduct.getProductId(), savedProduct.getSellerId(),
+        savedProduct.getCategoryId(), savedProduct.getProductName(), savedProduct.getDescription(),
+        savedProduct.getPrice(), savedProduct.getStockQuantity(), savedProduct.getImageURL());
   }
 }

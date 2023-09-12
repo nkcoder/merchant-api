@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import my.playground.onlineshop.entity.UserEntity;
-import my.playground.onlineshop.repository.UserRepository;
+import my.playground.onlineshop.persistence.entity.UserEntity;
+import my.playground.onlineshop.persistence.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

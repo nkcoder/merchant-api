@@ -35,6 +35,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("com.google.guava:guava:32.1.2-jre")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
+//    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")

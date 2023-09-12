@@ -2,7 +2,7 @@ package my.playground.onlineshop.product;
 
 import java.math.BigDecimal;
 import java.util.Random;
-import my.playground.onlineshop.entity.ProductEntity;
+import my.playground.onlineshop.persistence.entity.ProductEntity;
 
 public class ProductMockFactory {
 

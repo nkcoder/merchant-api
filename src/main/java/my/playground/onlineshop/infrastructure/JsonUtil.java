@@ -2,6 +2,7 @@ package my.playground.onlineshop.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ public class JsonUtil {
 
   static {
     objectMapper.registerModule(new ParameterNamesModule());
+    objectMapper.registerModule(new JavaTimeModule());
   }
 
   public <T> T fromJson(InputStream inputStream, Class<T> valueType) {

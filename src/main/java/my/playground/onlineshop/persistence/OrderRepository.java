@@ -1,6 +1,6 @@
-package my.playground.onlineshop.repository;
+package my.playground.onlineshop.persistence;
 
-import my.playground.onlineshop.entity.OrderEntity;
+import my.playground.onlineshop.persistence.entity.OrderEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

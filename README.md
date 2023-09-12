@@ -8,7 +8,7 @@
 
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html)
   - ![API](./swagger-ui.png)
-  - /auth/login: login to get JWT token
+  - missing `/auth/login` in Swagger: login to get JWT token
 
 ### Tech Stack
 
@@ -31,7 +31,9 @@
 - [ ] Orders
   - [ ] create an order
   - [ ] get an order
-  - [ ] update and order
+  - [ ] get all orders of a user
+  - [ ] update order status
+  - [ ] cancel an order
 
 - [x] /auto scripts
 - [x] dockerise
@@ -41,3 +43,5 @@
 - [ ] introduce VAVR and refactor in a functional programming way
 - [ ] encrypt the database secret
 - [ ] support GraphQL
+- [ ] API versions
+- [ ] Transactions, notifications, idempotency, stock management

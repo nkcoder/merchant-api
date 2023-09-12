@@ -1,4 +1,4 @@
-package my.playground.onlineshop.entity;
+package my.playground.onlineshop.persistence.entity;
 
 import java.time.LocalDateTime;
 import lombok.Getter;

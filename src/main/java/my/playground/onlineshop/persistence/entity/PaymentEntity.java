@@ -1,8 +1,10 @@
-package my.playground.onlineshop.entity;
+package my.playground.onlineshop.persistence.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 

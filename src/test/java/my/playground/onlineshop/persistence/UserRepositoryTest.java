@@ -1,11 +1,11 @@
-package my.playground.onlineshop.repository;
+package my.playground.onlineshop.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import my.playground.onlineshop.entity.UserEntity;
+import my.playground.onlineshop.persistence.entity.UserEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

@@ -1,4 +1,4 @@
-package my.playground.onlineshop.entity;
+package my.playground.onlineshop.persistence.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
