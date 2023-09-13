@@ -1,5 +1,6 @@
 package my.playground.onlineshop.infrastructure.exception;
 
+import my.playground.onlineshop.order.OrderNotFoundException;
 import my.playground.onlineshop.product.ProductNotFoundException;
 import my.playground.onlineshop.user.UserNotFoundException;
 import org.slf4j.Logger;
@@ -39,6 +40,14 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(value = {OrderNotFoundException.class})
+  public ResponseEntity<ApiError> handleOrderNotFoundException(OrderNotFoundException ex) {
+    logger.error("Product not found", ex);
+    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+        System.currentTimeMillis());
+    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(value = {InvalidCredentialException.class})
   public ResponseEntity<ApiError> handleInvalidCredential(InvalidCredentialException ex) {
     logger.error("Invalid credential exception", ex);
@@ -62,8 +71,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiError> handleExceptions(Exception ex) {
     logger.error("Exception occurred", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        ex.getMessage(), System.currentTimeMillis());
+    ApiError errorDetails = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(),
+        System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

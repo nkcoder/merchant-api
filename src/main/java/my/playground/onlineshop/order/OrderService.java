@@ -2,6 +2,7 @@ package my.playground.onlineshop.order;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import my.playground.onlineshop.persistence.OrderRepository;
 import my.playground.onlineshop.persistence.PaymentRepository;
@@ -79,4 +80,21 @@ public class OrderService {
     );
   }
 
+  public Optional<Order> getOrderById(Long orderId) {
+    return orderRepository.findById(orderId).flatMap(oe ->
+        paymentRepository.findById(oe.getPaymentId()).map(pe ->
+            new Order(
+                oe.getOrderId(),
+                List.of(),
+                new Payment(pe.getPaymentId(), pe.getAmount(), pe.getPaymentMethod(),
+                    pe.getDatePaid(),
+                    pe.getPaymentStatus()),
+                oe.getTotalAmount(),
+                oe.getShippingAddressId(),
+                oe.getBillingAddressId(),
+                oe.getDatePlaced()
+            )
+        )
+    );
+  }
 }

@@ -2,10 +2,11 @@ package my.playground.onlineshop.order;
 
 import static my.playground.onlineshop.product.ProductMockFactory.newProduct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -54,14 +55,36 @@ public class OrderServiceTest {
     orderEntity.setOrderId(100L);
     when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
 
-    CreateOrderReq createOrderReq = new CreateOrderReq(
-        1L, List.of(new OrderItem(1L, 1), new OrderItem(2L, 1)),
-        new Payment(null, BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"),
-        1L, 1L, LocalDateTime.now()
-    );
+    CreateOrderReq createOrderReq = new CreateOrderReq(1L,
+        List.of(new OrderItem(1L, 1), new OrderItem(2L, 1)),
+        new Payment(null, BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"), 1L,
+        1L, LocalDateTime.now());
     Order order = orderService.createOrder(createOrderReq);
     assertNotNull(order);
     assertEquals(100L, order.orderId());
   }
 
+  @Test
+  public void shouldReturnOrderById() {
+    Long orderId = 2L;
+    OrderEntity orderEntity = new OrderEntity(2L, LocalDateTime.now(), BigDecimal.valueOf(120.0),
+        1L, 1L, 300L);
+    PaymentEntity paymentEntity = new PaymentEntity(BigDecimal.valueOf(10.1), "Paypal",
+        LocalDateTime.now(), "Pending");
+    when(orderRepository.findById(orderId)).thenReturn(Optional.of(orderEntity));
+    when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(paymentEntity));
+
+    Optional<Order> maybeOrder = orderService.getOrderById(orderId);
+    assertTrue(maybeOrder.isPresent());
+    assertEquals(BigDecimal.valueOf(120.0), maybeOrder.get().totalAmount());
+  }
+
+  @Test
+  public void shouldReturnEmptyWhenOrderNotFound() {
+    Long orderId = 2L;
+    when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+    Optional<Order> maybeOrder = orderService.getOrderById(orderId);
+    assertFalse(maybeOrder.isPresent());
+  }
 }
