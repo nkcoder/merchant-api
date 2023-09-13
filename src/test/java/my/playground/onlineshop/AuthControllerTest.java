@@ -9,7 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import my.playground.onlineshop.user.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +38,11 @@ public class AuthControllerTest {
 
   @MockBean
   private AuthenticationManager authenticationManager;
+
+  @AfterEach
+  public void teardown() {
+    Mockito.reset(userService, authenticationManager);
+  }
 
   @Test
   public void testSuccessfulLogin() throws Exception {
