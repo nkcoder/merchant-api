@@ -24,9 +24,9 @@ public class OrderService {
   @Transactional
   public Order createOrder(CreateOrderReq createOrderReq) {
     List<Product> orderProducts = updateProductStocks(createOrderReq.items());
-    Long paymentId = savePayment(createOrderReq.payment());
+    Payment payment = savePayment(createOrderReq.payment());
 
-    OrderEntity orderEntity = buildOrderEntityFromRequest(createOrderReq, paymentId);
+    OrderEntity orderEntity = buildOrderEntityFromRequest(createOrderReq, payment);
     OrderEntity savedOrder = orderRepository.save(orderEntity);
 
     return mapToOrderDomain(savedOrder, orderProducts, createOrderReq.payment());
@@ -47,20 +47,22 @@ public class OrderService {
     return orderProducts;
   }
 
-  private Long savePayment(Payment payment) {
+  private Payment savePayment(Payment payment) {
     PaymentEntity paymentEntity = new PaymentEntity(payment.amount(), payment.paymentMethod(),
         payment.datePaid(), payment.paymentStatus());
-    return paymentRepository.save(paymentEntity).getPaymentId();
+    PaymentEntity savedPayment = paymentRepository.save(paymentEntity);
+    return new Payment(savedPayment.getPaymentId(), payment.amount(), payment.paymentMethod(),
+        payment.datePaid(), payment.paymentStatus());
   }
 
-  private OrderEntity buildOrderEntityFromRequest(CreateOrderReq createOrderReq, Long paymentId) {
+  private OrderEntity buildOrderEntityFromRequest(CreateOrderReq createOrderReq, Payment payment) {
     return new OrderEntity(
         createOrderReq.buyerId(),
         createOrderReq.datePlaced(),
-        createOrderReq.totalAmount(),
+        payment.amount(),
         createOrderReq.shippingAddressId(),
         createOrderReq.billingAddressId(),
-        paymentId
+        payment.id()
     );
   }
 

@@ -14,7 +14,8 @@ public class OrderMockFactory {
   public static Order newOrder(Double totalAmount, String paymentStatus) {
     return new Order(random.nextLong(),
         List.of(newProduct("product1", "description1"), newProduct("product2", "description2")),
-        new Payment(BigDecimal.valueOf(totalAmount), "Paypal", LocalDateTime.now(), paymentStatus),
+        new Payment(null, BigDecimal.valueOf(totalAmount), "Paypal", LocalDateTime.now(),
+            paymentStatus),
         BigDecimal.valueOf(totalAmount), 1L, 2L, LocalDateTime.now());
   }
 

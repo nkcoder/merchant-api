@@ -41,8 +41,8 @@ public class OrderControllerTest {
 
     CreateOrderReq createOrderReq = new CreateOrderReq(
         1L, List.of(new OrderItem(1L, 1), new OrderItem(2L, 1)),
-        new Payment(BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"),
-        BigDecimal.valueOf(120.0), 1L, 1L, LocalDateTime.now()
+        new Payment(null, BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"),
+        1L, 1L, LocalDateTime.now()
     );
 
     System.out.println("creatOrderReq: " + jsonUtil.toJson(createOrderReq));

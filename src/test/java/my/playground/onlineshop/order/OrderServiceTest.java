@@ -42,7 +42,8 @@ public class OrderServiceTest {
     Product mockExistingProduct = newProduct("product", "description");
     when(productService.getProductById(anyLong())).thenReturn(Optional.of(mockExistingProduct));
     Product mockUpdatedProduct = newProduct("product", "description");
-    when(productService.updateProduct(anyLong(), any(Product.class))).thenReturn(mockUpdatedProduct);
+    when(productService.updateProduct(anyLong(), any(Product.class))).thenReturn(
+        mockUpdatedProduct);
     PaymentEntity paymentEntity = new PaymentEntity(BigDecimal.valueOf(10.1), "Paypal",
         LocalDateTime.now(), "Pending");
     paymentEntity.setPaymentId(300L);
@@ -55,14 +56,12 @@ public class OrderServiceTest {
 
     CreateOrderReq createOrderReq = new CreateOrderReq(
         1L, List.of(new OrderItem(1L, 1), new OrderItem(2L, 1)),
-        new Payment(BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"),
-        BigDecimal.valueOf(120.0), 1L, 1L, LocalDateTime.now()
+        new Payment(null, BigDecimal.valueOf(120.0), "Paypal", LocalDateTime.now(), "pending"),
+        1L, 1L, LocalDateTime.now()
     );
     Order order = orderService.createOrder(createOrderReq);
     assertNotNull(order);
     assertEquals(100L, order.orderId());
-
   }
-
 
 }
