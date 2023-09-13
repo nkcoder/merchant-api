@@ -3,9 +3,14 @@ spring:
     url: jdbc:postgresql://localhost:5432/merchandise
     username: merch
     password: merch2023!
-
   flyway:
     baseline-on-migrate: true
+  docker:
+    compose:
+      skip:
+        in-tests: true
+
+
 
 
 jwt:

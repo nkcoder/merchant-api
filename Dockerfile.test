@@ -1,0 +1,9 @@
+# Use the official Gradle image as a base image
+FROM gradle:latest as builder
+
+# Copy your source code into the container
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+
+# This will run tests when the container starts
+CMD ["./gradlew", "clean", "test"]

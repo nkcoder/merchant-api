@@ -1,4 +1,6 @@
 #!/bin/bash
 
-./gradlew clean build
-docker-compose build
+set -e
+
+./gradlew clean build test
+docker compose build
