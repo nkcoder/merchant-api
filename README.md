@@ -1,6 +1,5 @@
-> This is a playground project just for refreshing my knowledge on Java tech stack.
 
-## Online Shop (simplified) backend APIs
+## Restful API in Java/SpringBoot
 
 ## OpenAPI document
 
