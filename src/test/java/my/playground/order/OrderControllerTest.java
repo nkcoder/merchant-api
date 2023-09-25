@@ -2,6 +2,8 @@ package my.playground.order;
 
 import io.restassured.http.ContentType;
 import my.playground.IntegrationBaseTest;
+import my.playground.persistence.OrderRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,15 @@ public class OrderControllerTest extends IntegrationBaseTest {
 
   @Autowired
   private OrderService orderService;
+
+  @Autowired
+  private OrderRepository orderRepository;
+
+  @AfterEach
+  public void teardown() {
+    userRepository.deleteById(userId);
+    orderRepository.deleteAll();
+  }
 
   @Test
   public void shouldCreateOrder() {

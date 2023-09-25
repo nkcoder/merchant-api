@@ -2,6 +2,7 @@ package my.playground.user;
 
 import io.restassured.http.ContentType;
 import my.playground.IntegrationBaseTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -10,9 +11,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class UserControllerTest extends IntegrationBaseTest {
 
+  private static final String TEST_EMAIL = "test1@email.com";
+
+  @AfterEach
+  public void teardown() {
+    userRepository.deleteById(userId);
+    userRepository.deleteByEmail(TEST_EMAIL);
+  }
+
   @Test
   public void shouldRegisterUser() {
-    given().body(new UserRegistrationReq("test1User", "test1@email.com", "test1Pass!"))
+    given().body(new UserRegistrationReq("test1User", TEST_EMAIL, "test1Pass!"))
         .contentType(ContentType.JSON).when().post("/users/register").then()
         .statusCode(HttpStatus.CREATED.value()).body("userName", equalTo("test1User"))
         .body("email", equalTo("test1@email.com"));

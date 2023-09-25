@@ -1,13 +1,17 @@
 package my.playground.product;
 
+import com.google.common.collect.Lists;
 import io.restassured.http.ContentType;
 import my.playground.IntegrationBaseTest;
 import my.playground.persistence.ProductRepository;
+import my.playground.persistence.entity.ProductEntity;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -19,12 +23,21 @@ public class ProductControllerTest extends IntegrationBaseTest {
   @Autowired
   private ProductRepository productRepository;
 
+  private final List<Long> productIdsCreated = new ArrayList<>();
+
+  @AfterEach
+  public void teardown() {
+    productRepository.deleteAllById(productIdsCreated);
+    userRepository.deleteById(userId);
+  }
+
   @Test
   public void getAllProducts_ShouldReturnListOfProducts() {
-    productRepository.saveAll(List.of(
+    Iterable<ProductEntity> productsSaved = productRepository.saveAll(List.of(
         newProductEntityForSave("product1", "description1"),
         newProductEntityForSave("product2", "description2")
     ));
+    productIdsCreated.addAll(Lists.newArrayList(productsSaved).stream().map(ProductEntity::getId).toList());
 
     given()
         .header("Authorization", generateJwtToken())
@@ -38,6 +51,7 @@ public class ProductControllerTest extends IntegrationBaseTest {
   public void getProductById_ShouldReturnProduct() {
     Long productId = productRepository.save(newProductEntityForSave("product1", "description1"))
         .getId();
+    productIdsCreated.add(productId);
 
     given()
         .header("Authorization", generateJwtToken())

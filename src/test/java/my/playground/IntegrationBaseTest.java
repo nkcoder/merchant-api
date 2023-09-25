@@ -4,9 +4,7 @@ import io.restassured.RestAssured;
 import my.playground.infrastructure.jwt.JwtUtil;
 import my.playground.persistence.UserRepository;
 import my.playground.persistence.entity.UserEntity;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,8 +26,15 @@ import java.util.List;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class IntegrationBaseTest {
 
-  private static final PostgreSQLContainer<?> SQL_CONTAINER = new PostgreSQLContainer<>(
-      "postgres:15-alpine");
+  private static final PostgreSQLContainer<?> SQL_CONTAINER;
+
+  /*
+   * How to reuse Testcontainers between multiple SpringBootTests? (https://stackoverflow.com/a/62443261/2695077)
+   */
+  static {
+    SQL_CONTAINER = new PostgreSQLContainer<>("postgres:15-alpine").withReuse(true);
+    SQL_CONTAINER.start();
+  }
 
   @LocalServerPort
   public Integer port;
@@ -44,16 +49,6 @@ public class IntegrationBaseTest {
   protected PasswordEncoder passwordEncoder;
 
   protected Long userId;
-
-  @BeforeAll
-  public static void beforeAll() {
-    SQL_CONTAINER.start();
-  }
-
-  @AfterAll
-  public static void afterAll() {
-    SQL_CONTAINER.stop();
-  }
 
   @DynamicPropertySource
   public static void configureProperties(DynamicPropertyRegistry registry) {
