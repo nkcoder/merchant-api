@@ -26,21 +26,22 @@ import java.util.List;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class IntegrationBaseTest {
 
-  private static final PostgreSQLContainer<?> SQL_CONTAINER;
+  protected static final PostgreSQLContainer<?> SQL_CONTAINER;
 
   /*
-   * How to reuse Testcontainers between multiple SpringBootTests? (https://stackoverflow.com/a/62443261/2695077)
+   * 1. How to reuse Testcontainers between multiple SpringBootTests? (https://stackoverflow.com/a/62443261/2695077)
+   * 2. Singleton container: https://java.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
    */
   static {
-    SQL_CONTAINER = new PostgreSQLContainer<>("postgres:15-alpine").withReuse(true);
+    SQL_CONTAINER = new PostgreSQLContainer<>("postgres:15-alpine");
     SQL_CONTAINER.start();
   }
 
   @LocalServerPort
-  public Integer port;
+  protected Integer port;
 
   @Autowired
-  public UserRepository userRepository;
+  protected UserRepository userRepository;
 
   @Autowired
   protected JwtUtil jwtUtil;
