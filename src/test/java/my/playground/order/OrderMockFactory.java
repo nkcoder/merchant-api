@@ -1,11 +1,11 @@
 package my.playground.order;
 
-import static my.playground.product.ProductMockFactory.newProduct;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+
+import static my.playground.product.ProductMockFactory.newProduct;
 
 public class OrderMockFactory {
 
@@ -14,9 +14,7 @@ public class OrderMockFactory {
   public static Order newOrder(Double totalAmount, String paymentStatus) {
     return new Order(random.nextLong(),
         List.of(newProduct("product1", "description1"), newProduct("product2", "description2")),
-        new Payment(null, BigDecimal.valueOf(totalAmount), "Paypal", LocalDateTime.now(),
-            paymentStatus),
-        BigDecimal.valueOf(totalAmount), 1L, 2L, LocalDateTime.now());
+        BigDecimal.valueOf(totalAmount), 1L, LocalDateTime.now());
   }
 
 }

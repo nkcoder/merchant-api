@@ -12,12 +12,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Getter
 public class UserEntity {
-    @Id
-    @Setter
-    private Long userId;
-    private final String userName;
-    private final String email;
-    private final String password;
-    private final String userType;
-    private final LocalDateTime dateRegistered;
+  private final String userName;
+  private final String email;
+  private final String password;
+  private final LocalDateTime dateRegistered;
+  @Id
+  @Setter
+  private Long id;
 }

@@ -12,14 +12,13 @@ import java.math.BigDecimal;
 @Getter
 @RequiredArgsConstructor
 public class ProductEntity {
-    @Id
-    @Setter
-    private Long productId;
-    private final Long sellerId;   // For simplicity, just the ID. Use Join for complex queries.
-    private final Long categoryId; // Similarly, just the ID here.
-    private final String productName;
-    private final String description;
-    private final BigDecimal price;
-    private final Integer stockQuantity;
-    private final String imageURL;
+
+  private final Long sellerId;
+  private final String productName;
+  private final String description;
+  private final BigDecimal price;
+  private final Integer quantity;
+  @Id
+  @Setter
+  private Long id;
 }

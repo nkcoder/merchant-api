@@ -1,13 +1,14 @@
 package my.playground.product;
 
 import com.google.common.collect.Lists;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import my.playground.persistence.ProductRepository;
 import my.playground.persistence.entity.ProductEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,41 +18,44 @@ public class ProductService {
 
   public List<Product> getAllProducts() {
     return Lists.newArrayList(productRepository.findAll()).stream().map(
-        pe -> new Product(pe.getProductId(), pe.getSellerId(), pe.getCategoryId(),
-            pe.getProductName(), pe.getDescription(), pe.getPrice(), pe.getStockQuantity(),
-            pe.getImageURL())).collect(Collectors.toList());
+        pe -> new Product(pe.getId(), pe.getSellerId(), pe.getProductName(),
+            pe.getDescription(), pe.getPrice(), pe.getQuantity())).collect(Collectors.toList());
   }
 
   public Optional<Product> getProductById(Long productId) {
     return productRepository.findById(productId).map(
-        pe -> new Product(pe.getProductId(), pe.getSellerId(), pe.getCategoryId(),
-            pe.getProductName(), pe.getDescription(), pe.getPrice(), pe.getStockQuantity(),
-            pe.getImageURL()));
+        pe -> new Product(pe.getId(), pe.getSellerId(), pe.getProductName(),
+            pe.getDescription(), pe.getPrice(), pe.getQuantity()));
+  }
+
+  public List<Product> getProducts(List<Long> productIds) {
+    return Lists.newArrayList(productRepository.findAllById(productIds)).stream().map(pe ->
+        new Product(pe.getId(), pe.getSellerId(), pe.getProductName(),
+            pe.getDescription(), pe.getPrice(), pe.getQuantity())
+    ).collect(Collectors.toList());
   }
 
   public Product addProduct(AddProductRequest addProductRequest) {
     ProductEntity newProduct = new ProductEntity(addProductRequest.sellerId(),
-        addProductRequest.categoryId(), addProductRequest.productName(),
-        addProductRequest.description(), addProductRequest.price(),
-        addProductRequest.stockQuantity(), addProductRequest.imageURL());
+        addProductRequest.productName(), addProductRequest.description(), addProductRequest.price(),
+        addProductRequest.quantity());
     ProductEntity savedProduct = productRepository.save(newProduct);
-    return new Product(savedProduct.getProductId(), savedProduct.getSellerId(),
-        savedProduct.getCategoryId(), savedProduct.getProductName(), savedProduct.getDescription(),
-        savedProduct.getPrice(), savedProduct.getStockQuantity(), savedProduct.getImageURL());
+    return new Product(savedProduct.getId(), savedProduct.getSellerId(),
+        savedProduct.getProductName(), savedProduct.getDescription(), savedProduct.getPrice(),
+        savedProduct.getQuantity());
   }
 
   public Product updateProduct(Long productId, Product product) {
     ProductEntity updatedProduct = productRepository.findById(productId).map(pe -> {
-      ProductEntity newProduct = new ProductEntity(product.sellerId(), product.categoryId(),
-          product.productName(), product.description(), product.price(), product.stockQuantity(),
-          product.imageURL());
-      newProduct.setProductId(pe.getProductId());
+      ProductEntity newProduct = new ProductEntity(product.sellerId(), product.productName(),
+          product.description(), product.price(), product.quantity());
+      newProduct.setId(pe.getId());
       return newProduct;
     }).orElseThrow(() -> new ProductNotFoundException("productId: " + productId));
 
     ProductEntity savedProduct = productRepository.save(updatedProduct);
-    return new Product(savedProduct.getProductId(), savedProduct.getSellerId(),
-        savedProduct.getCategoryId(), savedProduct.getProductName(), savedProduct.getDescription(),
-        savedProduct.getPrice(), savedProduct.getStockQuantity(), savedProduct.getImageURL());
+    return new Product(savedProduct.getId(), savedProduct.getSellerId(),
+        savedProduct.getProductName(), savedProduct.getDescription(), savedProduct.getPrice(),
+        savedProduct.getQuantity());
   }
 }

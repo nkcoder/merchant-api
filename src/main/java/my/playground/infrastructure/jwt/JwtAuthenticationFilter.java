@@ -3,10 +3,8 @@ package my.playground.infrastructure.jwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Collections;
-import my.playground.infrastructure.exception.InvalidCredentialException;
 import my.playground.infrastructure.JsonUtil;
+import my.playground.infrastructure.exception.InvalidCredentialException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.Collections;
+
 @Component
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -28,7 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   @Autowired
   public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-      JsonUtil jsonUtil) {
+                                 JsonUtil jsonUtil) {
     super(authenticationManager);
     this.jwtUtil = jwtUtil;
     this.jsonUtil = jsonUtil;
@@ -43,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
  */
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
-      HttpServletResponse response) throws AuthenticationException {
+                                              HttpServletResponse response) throws AuthenticationException {
     logger.info("JwtAuthenticationFilter, processing request: {}", request.getRequestURL());
     try {
       LoginRequest loginRequest = jsonUtil.fromJson(request.getInputStream(), LoginRequest.class);
@@ -62,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain, Authentication authResult) {
+                                          FilterChain chain, Authentication authResult) {
     UserDetails userDetails = (UserDetails) authResult.getPrincipal();
     String token = jwtUtil.generateToken(userDetails);
     response.addHeader("Authorization", "Bearer " + token);

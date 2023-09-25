@@ -1,83 +1,55 @@
 package my.playground;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-import my.playground.user.UserService;
-import org.junit.jupiter.api.AfterEach;
+import io.restassured.http.ContentType;
+import my.playground.infrastructure.jwt.JwtAuthenticationFilter;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class AuthControllerTest {
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.contains;
 
-  @Autowired
-  private MockMvc mockMvc;
+public class AuthControllerTest extends IntegrationBaseTest {
 
-  @MockBean
-  private UserService userService;
-
-  @MockBean
-  private AuthenticationManager authenticationManager;
-
-  @AfterEach
-  public void teardown() {
-    Mockito.reset(userService, authenticationManager);
+  @Test
+  public void testSuccessfulLogin() {
+    JwtAuthenticationFilter.LoginRequest loginRequest = new JwtAuthenticationFilter.LoginRequest(
+        "test0User",
+        "test0Pass!"
+    );
+    given()
+        .contentType(ContentType.JSON)
+        .body(loginRequest)
+        .when()
+        .post("/auth/login")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .header("Authorization", containsString("Bearer "));
   }
 
   @Test
-  public void testSuccessfulLogin() throws Exception {
-    User user = new User("testUsername", "testPassword", List.of());
-    when(userService.loadUserByUsername(any())).thenReturn(user);
-
-    Authentication authentication = new UsernamePasswordAuthenticationToken(user, "testPassword");
-    when(authenticationManager.authenticate(any())).thenReturn(authentication);
-
-    mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"username\":\"testUsername\",\"password\":\"testPassword\"}"))
-        .andExpect(status().isOk())
-        .andExpect(header().exists("Authorization")); // Check JWT token presence
-  }
-
-  @Test
-  public void testLoginWithWrongCredentials() throws Exception {
-    when(userService.loadUserByUsername(any())).thenThrow(
-        new UsernameNotFoundException("User not found"));
-
-    when(authenticationManager.authenticate(any())).thenThrow(UsernameNotFoundException.class);
-
-    mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"username\":\"wrongUsername\",\"password\":\"wrongPassword\"}"))
-        .andExpect(status().isUnauthorized());
+  public void testLoginWithWrongCredentials() {
+    JwtAuthenticationFilter.LoginRequest loginRequest = new JwtAuthenticationFilter.LoginRequest(
+        "test0User",
+        "wrongPass!!"
+    );
+    given()
+        .contentType(ContentType.JSON)
+        .body(loginRequest)
+        .when()
+        .post("/auth/login")
+        .then()
+        .statusCode(HttpStatus.UNAUTHORIZED.value());
   }
 
   @Test
   public void testAccessWithInvalidToken() throws Exception {
-    mockMvc.perform(get("/your-secured-endpoint")
-            .header("Authorization", "Bearer invalidToken"))
-        .andExpect(status().isUnauthorized());
+    given()
+        .header("Authorization", "Bearer invalidToken")
+        .when()
+        .get("/your-secured-endpoint")
+        .then()
+        .statusCode(HttpStatus.UNAUTHORIZED.value());
   }
-
 
 }

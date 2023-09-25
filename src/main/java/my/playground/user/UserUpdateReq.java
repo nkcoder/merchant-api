@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 public record UserUpdateReq(@NotNull Long userId,
                             @NotEmpty @Size(min = 3, max = 20) String userName,
                             @NotEmpty @Email String email,
-                            @NotEmpty @Size(min = 6) String password,
-                            @NotEmpty String userType) {
+                            @NotEmpty @Size(min = 6, max = 30) String password) {
 
 }

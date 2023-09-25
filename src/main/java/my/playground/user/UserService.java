@@ -1,15 +1,16 @@
 package my.playground.user;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import my.playground.persistence.entity.UserEntity;
 import my.playground.persistence.UserRepository;
+import my.playground.persistence.entity.UserEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +21,10 @@ public class UserService implements UserDetailsService {
 
   public User register(UserRegistrationReq registrationReq) {
     UserEntity userEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
-        passwordEncoder.encode(registrationReq.password()), registrationReq.userType(),
-        LocalDateTime.now());
+        passwordEncoder.encode(registrationReq.password()), LocalDateTime.now());
     UserEntity userSaved = userRepository.save(userEntity);
-    return new User(userSaved.getUserId(), userSaved.getUserName(), userSaved.getEmail(),
-        userSaved.getPassword(), userSaved.getUserType(), userSaved.getDateRegistered());
+    return new User(userSaved.getId(), userSaved.getUserName(), userSaved.getEmail(),
+        userSaved.getPassword(), userSaved.getDateRegistered());
   }
 
   @Override
@@ -38,16 +38,14 @@ public class UserService implements UserDetailsService {
   public User updateUser(Long userId, UserUpdateReq updateReq) {
     UserEntity newEntity = userRepository.findById(userId).map(existingUser -> {
       UserEntity newUser = new UserEntity(updateReq.userName(), updateReq.email(),
-          updateReq.password(),
-          updateReq.userType(), existingUser.getDateRegistered());
-      newUser.setUserId(userId);
+          updateReq.password(), existingUser.getDateRegistered());
+      newUser.setId(userId);
       return newUser;
     }).orElseThrow(() -> new UserNotFoundException("User doesn't exist: " + userId));
 
     UserEntity updatedEntity = userRepository.save(newEntity);
     return new User(userId, updatedEntity.getUserName(), updatedEntity.getEmail(), null,
-        updatedEntity.getUserType(), updatedEntity.getDateRegistered());
+        updatedEntity.getDateRegistered());
   }
-
 }
 

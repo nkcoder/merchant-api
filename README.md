@@ -9,6 +9,23 @@
   - ![API](./swagger-ui.png)
   - missing `/auth/login` in Swagger: login to get JWT token
 
+## How to run
+
+Run all the tests
+```bash
+auto/test
+```
+
+Run the application locally:
+```bash
+auto/dev
+```
+
+Run one specific test:
+```bash
+./gradlew test --test my.playground.user.UserControllerTest
+```
+
 ### Tech Stack
 
 - [x] Java 17

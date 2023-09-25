@@ -1,31 +1,25 @@
 package my.playground.infrastructure.jwt;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import io.jsonwebtoken.security.SignatureException;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
-@ActiveProfiles("test")
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
 public class JwtUtilTest {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil = new JwtUtil("bXlKV1Qtc2VjcmV0LWtleS0yMDIzLUFVLTAwOTEwLVh", 3600);
 
-  private UserDetails userDetails;
+  private static UserDetails userDetails;
 
-  @BeforeEach
-  public void setUp() {
+  @BeforeAll
+  public static void beforeEach() {
     userDetails = new org.springframework.security.core.userdetails.User(
         "testUser",
         "testPass",

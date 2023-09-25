@@ -1,105 +1,66 @@
 package my.playground.user;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
+import io.restassured.http.ContentType;
+import my.playground.IntegrationBaseTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
 
-@AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
-@SpringBootTest
-public class UserControllerTest {
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 
-  @Autowired
-  private MockMvc mockMvc;
-
-  @MockBean
-  private UserService userService;
+public class UserControllerTest extends IntegrationBaseTest {
 
   @Test
-  public void shouldRegisterUser() throws Exception {
-    User user = new User(1L, "testUser", "test@email.com", null, "Admin", LocalDateTime.now());
-
-    when(userService.register(any(UserRegistrationReq.class))).thenReturn(user);
-
-    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
-            {"userName": "testUser", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
-            """)).andExpect(status().isCreated()).andExpect(jsonPath("$.userId").value(1L))
-        .andExpect(jsonPath("$.userName").value("testUser"))
-        .andExpect(jsonPath("$.email").value("test@email.com"));
+  public void shouldRegisterUser() {
+    given().body(new UserRegistrationReq("test1User", "test1@email.com", "test1Pass!"))
+        .contentType(ContentType.JSON).when().post("/users/register").then()
+        .statusCode(HttpStatus.CREATED.value()).body("userName", equalTo("test1User"))
+        .body("email", equalTo("test1@email.com"));
   }
 
   @Test
-  public void shouldReturnBadRequestWhenUserEmailIsInvalid() throws Exception {
-    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
-        {"userName": "testUser", "email": "test.email", "password": "testPass", "userType": "Admin"}
-        """)).andExpect(status().isBadRequest());
+  public void shouldReturnBadRequestWhenUserEmailIsInvalid() {
+    given().body(new UserRegistrationReq("testUser", "test.email", "testPass!"))
+        .contentType(ContentType.JSON).when().post("/users/register").then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
-  public void shouldReturnBadRequestWhenUserNameIsTooShort() throws Exception {
-    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
-        {"userName": "sa", "email": "test@email.com", "password": "testPass", "userType": "Admin"}
-        """)).andExpect(status().isBadRequest());
+  public void shouldReturnBadRequestWhenUserNameIsTooShort() {
+    given().body(new UserRegistrationReq("sa", "test.email", "testPass!"))
+        .contentType(ContentType.JSON).when().post("/users/register").then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
-  public void shouldReturnBadRequestWhenPasswordIsTooShort() throws Exception {
-    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content("""
-        {"userName": "testUser", "email": "test@email.com", "password": "test", "userType": "Admin"}
-        """)).andExpect(status().isBadRequest());
+  public void shouldReturnBadRequestWhenPasswordIsTooShort() {
+    given().body(new UserRegistrationReq("testUser", "test@email.com", "test!"))
+        .contentType(ContentType.JSON).when().post("/users/register").then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
-  public void shouldReturnUpdatedUser() throws Exception {
-    Long userId = 1L;
-    User user = new User(userId, "newName", "newemail@email.com", "newPassword", "ADMIN",
-        LocalDateTime.now());
-    when(userService.updateUser(anyLong(), any(UserUpdateReq.class))).thenReturn(user);
-    mockMvc.perform(put("/users/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {"userId": 1, "userName":  "newName", "password":  "newPassword", "email":  "newEmail@email.com", "userType":  "ADMIN"}
-                """))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.userName").value("newName"));
+  public void shouldReturnUpdatedUser() {
+    given().header("Authorization", generateJwtToken())
+        .body(new UserUpdateReq(userId, "newName", "newEmail@test.com", "newPassword!"))
+        .contentType(ContentType.JSON).when().put("/users/" + userId).then()
+        .statusCode(HttpStatus.OK.value()).body("userName", equalTo("newName"));
   }
 
   @Test
-  public void shouldFailToUpdateWhenInvalidEmail() throws Exception {
-    mockMvc.perform(put("/users/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {"userName":  "newName", "password":  "newPassword", "email":  "newEmailemail.com", "userType":  "ADMIN"}
-                """))
-        .andExpect(status().isBadRequest());
+  public void shouldFailToUpdateWhenInvalidEmail() {
+    given().header("Authorization", generateJwtToken())
+        .body(new UserUpdateReq(userId, "newName", "newEmail", "newPassword!"))
+        .contentType(ContentType.JSON).when().put("/users/" + userId).then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
-  public void shouldFailToUpdateWhenPasswordIsTooShort() throws Exception {
-    mockMvc.perform(put("/users/1")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {"userName":  "newName", "password":  "ne", "email":  "newEmail@email.com", "userType":  "ADMIN"}
-                """))
-        .andExpect(status().isBadRequest());
+  public void shouldFailToUpdateWhenPasswordIsTooShort() {
+    given().header("Authorization", generateJwtToken())
+        .body(new UserUpdateReq(userId, "newName", "newEmail@test.com", "new!"))
+        .contentType(ContentType.JSON).when().put("/users/" + userId).then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
+
 }
-
-
-
-
-

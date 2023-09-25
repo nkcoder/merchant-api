@@ -1,8 +1,9 @@
 package my.playground.product;
 
+import my.playground.persistence.entity.ProductEntity;
+
 import java.math.BigDecimal;
 import java.util.Random;
-import my.playground.persistence.entity.ProductEntity;
 
 public class ProductMockFactory {
 
@@ -12,27 +13,27 @@ public class ProductMockFactory {
     return new Product(
         random.nextLong(),
         1L,
-        2L,
         name,
         description,
         BigDecimal.valueOf(100.0),
-        10,
-        "https://m.media-amazon.com/images/I/81L8quiJXhL._AC_SL1500_.jpg"
+        10
     );
   }
 
-  public static ProductEntity newProductEntity(String name, String description) {
-    ProductEntity productEntity = new ProductEntity(
+  public static ProductEntity newProductEntityForReturn(String name, String description) {
+    ProductEntity productEntity = newProductEntityForSave(name, description);
+    productEntity.setId(random.nextLong());
+    return productEntity;
+  }
+
+  public static ProductEntity newProductEntityForSave(String name, String description) {
+    return new ProductEntity(
         1L,
-        2L,
         name,
         description,
         BigDecimal.valueOf(100.0),
-        10,
-        "https://m.media-amazon.com/images/I/81L8quiJXhL._AC_SL1500_.jpg"
+        10
     );
-    productEntity.setProductId(random.nextLong());
-    return productEntity;
   }
 
 }

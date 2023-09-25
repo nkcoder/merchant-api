@@ -4,21 +4,25 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.util.Date;
-import java.util.function.Function;
-import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.function.Function;
+
 @Component
 public class JwtUtil {
 
-  @Value("${jwt.secret}")
-  private String secret;
+  private final String secret;
 
-  @Value("${jwt.expiration}")
-  private long expirationTime;
+  private final long expirationTime;
+
+  public JwtUtil(@Value("${jwt.secret}") String secret,  @Value("${jwt.expiration}") long expirationTime) {
+    this.secret = secret;
+    this.expirationTime = expirationTime;
+  }
 
   public String generateToken(UserDetails userDetails) {
     return Jwts.builder()

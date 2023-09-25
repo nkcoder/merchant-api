@@ -14,13 +14,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class OrderEntity {
 
-  @Id
-  @Setter
-  private Long orderId;
   private final Long buyerId;
   private final LocalDateTime datePlaced;
   private final BigDecimal totalAmount;
   private final Long shippingAddressId;
-  private final Long billingAddressId;
-  private final Long paymentId;
+  @Id
+  @Setter
+  private Long id;
 }

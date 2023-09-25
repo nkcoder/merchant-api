@@ -1,16 +1,7 @@
 package my.playground.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-import my.playground.persistence.entity.UserEntity;
 import my.playground.persistence.UserRepository;
+import my.playground.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -34,12 +33,12 @@ public class UserServiceTest {
   public void shouldRegisterUser() {
     // Given
     UserRegistrationReq registrationReq = new UserRegistrationReq("testUser", "test@email.com",
-        "testPass", "DEFAULT_USER_TYPE");
+        "testPass");
 
     when(passwordEncoder.encode(registrationReq.password())).thenReturn("encoded-password");
 
     UserEntity mockUserEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
-        passwordEncoder.encode(registrationReq.password()), registrationReq.userType(),
+        passwordEncoder.encode(registrationReq.password()),
         LocalDateTime.now());
 
     when(userRepository.save(any(UserEntity.class))).thenReturn(mockUserEntity);
@@ -52,7 +51,6 @@ public class UserServiceTest {
     assertEquals("testUser", registeredUser.userName());
     assertEquals("test@email.com", registeredUser.email());
     assertEquals("encoded-password", registeredUser.password());
-    assertEquals("DEFAULT_USER_TYPE", registeredUser.userType());
     verify(userRepository).save(any(UserEntity.class));
   }
 
@@ -60,7 +58,7 @@ public class UserServiceTest {
   public void shouldLoadUserByName() {
     String username = "testUser";
     Optional<UserEntity> optionalUser = Optional.of(
-        new UserEntity(username, "test@email.com", "testPass", "ADMIN", LocalDateTime.now()));
+        new UserEntity(username, "test@email.com", "testPass", LocalDateTime.now()));
     when(userRepository.findByUserName(username)).thenReturn(optionalUser);
 
     UserDetails userDetails = userService.loadUserByUsername(username);
@@ -81,12 +79,12 @@ public class UserServiceTest {
   public void shouldReturnUpdatedUser() {
     Long userId = 1L;
     when(userRepository.findById(userId)).thenReturn(
-        Optional.of(new UserEntity("name", "email", "password", "admin", LocalDateTime.now())));
+        Optional.of(new UserEntity("name", "email", "password", LocalDateTime.now())));
     when(userRepository.save(any(UserEntity.class))).thenReturn(
-        new UserEntity("newName", "newEmail@email.com", "newpassword", "admin",
+        new UserEntity("newName", "newEmail@email.com", "newpassword",
             LocalDateTime.now()));
 
-    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd", "USER");
+    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd");
     User updatedUser = userService.updateUser(userId, updateReq);
 
     assertNotNull(updatedUser);
@@ -98,7 +96,7 @@ public class UserServiceTest {
   public void shouldThrowExceptionWhenUserNotFound() {
     Long userId = 2L;
     when(userRepository.findById(userId)).thenReturn(Optional.empty());
-    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd", "USER");
+    UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd");
     assertThrows(UserNotFoundException.class, () -> userService.updateUser(userId, updateReq));
   }
 

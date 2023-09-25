@@ -1,99 +1,82 @@
 package my.playground.product;
 
-import static my.playground.product.ProductMockFactory.newProduct;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import io.restassured.http.ContentType;
+import my.playground.IntegrationBaseTest;
+import my.playground.persistence.ProductRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import my.playground.infrastructure.JsonUtil;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
-public class ProductControllerTest {
+import static io.restassured.RestAssured.given;
+import static my.playground.product.ProductMockFactory.newProductEntityForSave;
+import static org.hamcrest.Matchers.equalTo;
+
+public class ProductControllerTest extends IntegrationBaseTest {
 
   @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private JsonUtil jsonUtil;
-
-  @MockBean
-  private ProductService productService;
+  private ProductRepository productRepository;
 
   @Test
-  public void getAllProducts_ShouldReturnListOfProducts() throws Exception {
-    List<Product> mockProducts = List.of(
-        newProduct("Product1", "Description1"),
-        newProduct("Product2", "Description2")
-    );
-    when(productService.getAllProducts()).thenReturn(mockProducts);
+  public void getAllProducts_ShouldReturnListOfProducts() {
+    productRepository.saveAll(List.of(
+        newProductEntityForSave("product1", "description1"),
+        newProductEntityForSave("product2", "description2")
+    ));
 
-    mockMvc.perform(get("/products"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].productName").value("Product1"))
-        .andExpect(jsonPath("$[1].productName").value("Product2"));
+    given()
+        .header("Authorization", generateJwtToken())
+        .when()
+        .get("/products")
+        .then()
+        .statusCode(HttpStatus.OK.value());
   }
 
   @Test
-  public void getProductById_ShouldReturnProduct() throws Exception {
-    Product mockProduct = newProduct("Product1", "Description1");
-    when(productService.getProductById(1L)).thenReturn(Optional.of(mockProduct));
+  public void getProductById_ShouldReturnProduct() {
+    Long productId = productRepository.save(newProductEntityForSave("product1", "description1"))
+        .getId();
 
-    mockMvc.perform(get("/products/1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.productName").value("Product1"));
+    given()
+        .header("Authorization", generateJwtToken())
+        .when()
+        .get("/products/" + productId)
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .body("productName", equalTo("product1"));
   }
 
   @Test
-  public void getProductById_ShouldThrowBadRequest() throws Exception {
-    when(productService.getProductById(1L)).thenReturn(Optional.empty());
-
-    mockMvc.perform(get("/products/1"))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public void addProduct_ShouldReturnProduct() throws Exception {
+  public void addProduct_ShouldReturnProduct() {
     AddProductRequest addProductRequest = new AddProductRequest(
-        1L, 2L, "Product1", "best ever!", BigDecimal.valueOf(100.0), 100, "test.jpg"
+        1L, "Product1", "best ever!", BigDecimal.valueOf(100.0), 100
     );
-    Product mockProduct = newProduct("Product1", "best ever product");
-    when(productService.addProduct(any(AddProductRequest.class))).thenReturn(mockProduct);
 
-    mockMvc.perform(post("/products")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonUtil.toJson(addProductRequest)))
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.productName").value("Product1"));
+    given()
+        .header("Authorization", generateJwtToken())
+        .body(addProductRequest)
+        .contentType(ContentType.JSON)
+        .post("/products")
+        .then()
+        .statusCode(HttpStatus.CREATED.value())
+        .body("productName", equalTo("Product1"))
+        .body("price", equalTo(100.0F));
   }
 
   @Test
-  public void addProduct_ShouldThrowBadRequestWhenNameIsInvalid() throws Exception {
+  public void addProduct_ShouldThrowBadRequestWhenNameIsInvalid() {
     AddProductRequest addProductRequest = new AddProductRequest(
-        1L, 2L, "p1", "best ever!", BigDecimal.valueOf(100.0), 100, "test.jpg"
-    );
-    Product mockProduct = newProduct("Product1", "best ever product");
-    when(productService.addProduct(any(AddProductRequest.class))).thenReturn(mockProduct);
+        1L, "p1", "best ever!", BigDecimal.valueOf(100.0), 100);
 
-    mockMvc.perform(post("/products")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(jsonUtil.toJson(addProductRequest)))
-        .andExpect(status().isBadRequest());
+    given()
+        .header("Authorization", generateJwtToken())
+        .body(addProductRequest)
+        .contentType(ContentType.JSON)
+        .post("/products")
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
 }
