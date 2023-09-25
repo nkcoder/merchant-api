@@ -11,7 +11,7 @@ import java.util.List;
 
 @Tag(name = "Products")
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 

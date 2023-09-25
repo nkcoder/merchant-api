@@ -21,7 +21,7 @@ public class AuthControllerTest extends IntegrationBaseTest {
         .contentType(ContentType.JSON)
         .body(loginRequest)
         .when()
-        .post("/auth/login")
+        .post("/v1/auth/login")
         .then()
         .statusCode(HttpStatus.OK.value())
         .header("Authorization", containsString("Bearer "));
@@ -37,7 +37,7 @@ public class AuthControllerTest extends IntegrationBaseTest {
         .contentType(ContentType.JSON)
         .body(loginRequest)
         .when()
-        .post("/auth/login")
+        .post("/v1/auth/login")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value());
   }
@@ -47,7 +47,7 @@ public class AuthControllerTest extends IntegrationBaseTest {
     given()
         .header("Authorization", "Bearer invalidToken")
         .when()
-        .get("/your-secured-endpoint")
+        .get("/v1/your-secured-endpoint")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value());
   }
