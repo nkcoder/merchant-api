@@ -35,6 +35,7 @@ Run one specific test:
 - [x] JWT
 - [x] Dockerise
 - [x] OpenAPI 3
+- [x] TestContainers
 
 ### TODO
 
@@ -51,9 +52,6 @@ Run one specific test:
   - [ ] update order status
   - [ ] cancel an order
 
-- [x] /auto scripts
-- [x] dockerise
-- [x] CI (Github Actions)
 - [ ] Refactor Controller tests from integration tests to unit tests
 - [ ] Refactor exception handling
 - [ ] introduce VAVR and refactor in a functional programming way

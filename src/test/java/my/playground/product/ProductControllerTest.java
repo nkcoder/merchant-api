@@ -42,7 +42,7 @@ public class ProductControllerTest extends IntegrationBaseTest {
     given()
         .header("Authorization", generateJwtToken())
         .when()
-        .get("/products")
+        .get("/v1/products")
         .then()
         .statusCode(HttpStatus.OK.value());
   }
@@ -56,7 +56,7 @@ public class ProductControllerTest extends IntegrationBaseTest {
     given()
         .header("Authorization", generateJwtToken())
         .when()
-        .get("/products/" + productId)
+        .get("/v1/products/" + productId)
         .then()
         .statusCode(HttpStatus.OK.value())
         .body("productName", equalTo("product1"));
@@ -72,7 +72,7 @@ public class ProductControllerTest extends IntegrationBaseTest {
         .header("Authorization", generateJwtToken())
         .body(addProductRequest)
         .contentType(ContentType.JSON)
-        .post("/products")
+        .post("/v1/products")
         .then()
         .statusCode(HttpStatus.CREATED.value())
         .body("productName", equalTo("Product1"))
@@ -88,7 +88,7 @@ public class ProductControllerTest extends IntegrationBaseTest {
         .header("Authorization", generateJwtToken())
         .body(addProductRequest)
         .contentType(ContentType.JSON)
-        .post("/products")
+        .post("/v1/products")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value());
   }
