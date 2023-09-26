@@ -1,24 +1,21 @@
 package my.playground.persistence.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 @Table("orders")
-@Getter
-@RequiredArgsConstructor
+@Data
+@Builder
 public class OrderEntity {
 
-  private final Long buyerId;
-  private final LocalDateTime datePlaced;
-  private final BigDecimal totalAmount;
-  private final Long shippingAddressId;
   @Id
-  @Setter
   private Long id;
+  private Long buyerId;
+  private LocalDateTime datePlaced;
+  private BigDecimal totalAmount;
+  private Long shippingAddressId;
 }

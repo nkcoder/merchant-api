@@ -1,5 +1,14 @@
 package my.playground.user;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.UserRepository;
 import my.playground.persistence.entity.UserEntity;
@@ -11,14 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -38,9 +39,9 @@ public class UserServiceTest {
 
     when(passwordEncoder.encode(registrationReq.password())).thenReturn("encoded-password");
 
-    UserEntity mockUserEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
-        passwordEncoder.encode(registrationReq.password()),
-        LocalDateTime.now());
+    UserEntity mockUserEntity = UserEntity.builder().userName(registrationReq.userName())
+        .email(registrationReq.email()).password(passwordEncoder.encode(registrationReq.password()))
+        .dateRegistered(LocalDateTime.now()).build();
 
     when(userRepository.save(any(UserEntity.class))).thenReturn(mockUserEntity);
 
@@ -58,8 +59,10 @@ public class UserServiceTest {
   @Test
   public void shouldLoadUserByName() {
     String username = "testUser";
+
     Optional<UserEntity> optionalUser = Optional.of(
-        new UserEntity(username, "test@email.com", "testPass", LocalDateTime.now()));
+        UserEntity.builder().userName(username).email("test@email.com").password("encodedPass")
+            .dateRegistered(LocalDateTime.now()).build());
     when(userRepository.findByUserName(username)).thenReturn(optionalUser);
 
     UserDetails userDetails = userService.loadUserByUsername(username);
@@ -79,11 +82,12 @@ public class UserServiceTest {
   @Test
   public void shouldReturnUpdatedUser() {
     Long userId = 1L;
-    when(userRepository.findById(userId)).thenReturn(
-        Optional.of(new UserEntity("name", "email", "password", LocalDateTime.now())));
+    when(userRepository.findById(userId)).thenReturn(Optional.of(
+        UserEntity.builder().userName("name").email("test@email.com").password("encodedPass")
+            .dateRegistered(LocalDateTime.now()).build()));
     when(userRepository.save(any(UserEntity.class))).thenReturn(
-        new UserEntity("newName", "newEmail@email.com", "newpassword",
-            LocalDateTime.now()));
+        UserEntity.builder().userName("newName").email("newEmail@email.com").password("newEncodedPass")
+            .dateRegistered(LocalDateTime.now()).build());
 
     UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd");
     User updatedUser = userService.updateUser(userId, updateReq);
