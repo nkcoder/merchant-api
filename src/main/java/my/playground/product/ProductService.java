@@ -2,8 +2,10 @@ package my.playground.product;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.ProductRepository;
 import my.playground.persistence.entity.ProductEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +53,7 @@ public class ProductService {
           product.description(), product.price(), product.quantity());
       newProduct.setId(pe.getId());
       return newProduct;
-    }).orElseThrow(() -> new ProductNotFoundException("productId: " + productId));
+    }).orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "Product not found: " + productId));
 
     ProductEntity savedProduct = productRepository.save(updatedProduct);
     return new Product(savedProduct.getId(), savedProduct.getSellerId(),

@@ -1,5 +1,6 @@
 package my.playground.user;
 
+import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.UserRepository;
 import my.playground.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -97,7 +98,7 @@ public class UserServiceTest {
     Long userId = 2L;
     when(userRepository.findById(userId)).thenReturn(Optional.empty());
     UserUpdateReq updateReq = new UserUpdateReq(1L, "name", "email@test.com", "pwd");
-    assertThrows(UserNotFoundException.class, () -> userService.updateUser(userId, updateReq));
+    assertThrows(AppException.class, () -> userService.updateUser(userId, updateReq));
   }
 
 }

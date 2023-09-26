@@ -1,8 +1,5 @@
 package my.playground.infrastructure.exception;
 
-import my.playground.order.OrderNotFoundException;
-import my.playground.product.ProductNotFoundException;
-import my.playground.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,62 +13,28 @@ public class GlobalExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-  @ExceptionHandler(value = {InvalidArgumentException.class})
-  public ResponseEntity<ApiError> handleInvalidArgumentException(InvalidArgumentException ex) {
-    logger.error("Invalid argument exception", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
-        System.currentTimeMillis());
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(value = {UserNotFoundException.class})
-  public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
-    logger.error("User not found", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
-        System.currentTimeMillis());
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(value = {ProductNotFoundException.class})
-  public ResponseEntity<ApiError> handleProductNotFoundException(ProductNotFoundException ex) {
-    logger.error("Product not found", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
-        System.currentTimeMillis());
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(value = {OrderNotFoundException.class})
-  public ResponseEntity<ApiError> handleOrderNotFoundException(OrderNotFoundException ex) {
-    logger.error("Product not found", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
-        System.currentTimeMillis());
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(value = {InvalidCredentialException.class})
-  public ResponseEntity<ApiError> handleInvalidCredential(InvalidCredentialException ex) {
-    logger.error("Invalid credential exception", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.FORBIDDEN.value(), ex.getMessage(),
-        System.currentTimeMillis());
-    return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+  @ExceptionHandler(value = AppException.class)
+  public ResponseEntity<ErrorDetails> handleAppException(AppException exception) {
+    ErrorDetails errorDetails = new ErrorDetails(exception.getHttpStatus().value(), exception.getMessage(), System.currentTimeMillis());
+    return new ResponseEntity<>(errorDetails, exception.getHttpStatus());
   }
 
   @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-  public ResponseEntity<ApiError> handleMethodArgumentNotValidException(
+  public ResponseEntity<ErrorDetails> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex) {
     logger.error("Invalid method argument exception", ex);
     String message = ex.getBindingResult().getFieldErrors().stream()
         .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
         .reduce("", (x, y) -> x + "| " + y);
-    ApiError errorDetails = new ApiError(HttpStatus.BAD_REQUEST.value(), message,
+    ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST.value(), message,
         System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiError> handleExceptions(Exception ex) {
+  public ResponseEntity<ErrorDetails> handleExceptions(Exception ex) {
     logger.error("Exception occurred", ex);
-    ApiError errorDetails = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(),
+    ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(),
         System.currentTimeMillis());
     return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
   }

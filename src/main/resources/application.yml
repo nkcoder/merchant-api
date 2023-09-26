@@ -18,7 +18,7 @@ logging:
   level:
     root: warn
     org.springframework: INFO
-    my.playground.onlineshop: INFO
+    my.playground: INFO
 
 springdoc:
   swagger-ui:

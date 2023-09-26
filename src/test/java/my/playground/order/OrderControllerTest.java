@@ -71,7 +71,7 @@ public class OrderControllerTest extends IntegrationBaseTest {
         .when()
         .get("/v1/orders/" + Long.MAX_VALUE)
         .then()
-        .statusCode(HttpStatus.BAD_REQUEST.value());
+        .statusCode(HttpStatus.NOT_FOUND.value());
   }
 
 }

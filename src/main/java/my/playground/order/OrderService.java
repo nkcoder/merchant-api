@@ -1,13 +1,14 @@
 package my.playground.order;
 
 import lombok.RequiredArgsConstructor;
+import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.OrderRepository;
 import my.playground.persistence.OrdersProductsRepository;
 import my.playground.persistence.entity.OrderEntity;
 import my.playground.persistence.entity.OrdersProductsEntity;
 import my.playground.product.Product;
-import my.playground.product.ProductNotFoundException;
 import my.playground.product.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +42,9 @@ public class OrderService {
     List<Product> orderProducts = new ArrayList<>();
     for (OrderItem item : orderItems) {
       Product product = productService.getProductById(item.productId())
-          .orElseThrow(() -> new ProductNotFoundException("productId: " + item.productId()));
+          .orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "Product not found: " + item.productId()));
       if (product.quantity() < item.quantity()) {
-        throw new OutOfStockException("productId: " + item.productId());
+        throw AppException.from(HttpStatus.BAD_REQUEST, "Product out of stock: " + item.productId());
       }
       Product updatedProduct = productService.updateProduct(item.productId(),
           product.withStockUpdated(product.quantity() - item.quantity()));
