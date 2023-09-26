@@ -1,5 +1,8 @@
 package my.playground.order;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.OrderRepository;
@@ -11,11 +14,6 @@ import my.playground.product.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +39,11 @@ public class OrderService {
   private List<Product> updateProductStocks(List<OrderItem> orderItems) {
     List<Product> orderProducts = new ArrayList<>();
     for (OrderItem item : orderItems) {
-      Product product = productService.getProductById(item.productId())
-          .orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "Product not found: " + item.productId()));
+      Product product = productService.getProductById(item.productId()).orElseThrow(
+          () -> AppException.from(HttpStatus.NOT_FOUND, "Product not found: " + item.productId()));
       if (product.quantity() < item.quantity()) {
-        throw AppException.from(HttpStatus.BAD_REQUEST, "Product out of stock: " + item.productId());
+        throw AppException.from(HttpStatus.BAD_REQUEST,
+            "Product out of stock: " + item.productId());
       }
       Product updatedProduct = productService.updateProduct(item.productId(),
           product.withStockUpdated(product.quantity() - item.quantity()));
@@ -54,15 +53,16 @@ public class OrderService {
   }
 
   private OrderEntity buildOrderEntityFromRequest(CreateOrderReq createOrderReq) {
-    return new OrderEntity(createOrderReq.buyerId(), createOrderReq.datePlaced(),
-        createOrderReq.totalAmount(), createOrderReq.shippingAddressId());
+    return OrderEntity.builder().buyerId(createOrderReq.buyerId())
+        .datePlaced(createOrderReq.datePlaced()).totalAmount(createOrderReq.totalAmount())
+        .shippingAddressId(createOrderReq.shippingAddressId()).build();
   }
 
   private List<OrdersProductsEntity> buildOrdersProducts(Long orderId,
-                                                         CreateOrderReq createOrderReq) {
-    return createOrderReq.items().stream()
-        .map(item -> new OrdersProductsEntity(orderId, item.productId()))
-        .collect(Collectors.toList());
+      CreateOrderReq createOrderReq) {
+    return createOrderReq.items().stream().map(
+            item -> OrdersProductsEntity.builder().orderId(orderId).productId(item.productId()).build())
+        .toList();
   }
 
   private Order mapToOrderDomain(OrderEntity savedOrder, List<Product> orderProducts) {

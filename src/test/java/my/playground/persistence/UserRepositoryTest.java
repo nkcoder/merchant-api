@@ -28,12 +28,12 @@ public class UserRepositoryTest {
 
   @Test
   public void shouldFindUserByEmail() {
-    UserEntity newUser = new UserEntity(
-        "Daniel",
-        "daniel@gmail.com",
-        "PassW0rd!",
-        LocalDateTime.now()
-    );
+    UserEntity newUser = UserEntity.builder()
+        .userName("Daniel")
+        .email("daniel@gmail.com")
+        .password("PassW0rd")
+        .dateRegistered(LocalDateTime.now())
+        .build();
     userRepository.save(newUser);
 
     Optional<UserEntity> maybeUser = userRepository.findByEmail("daniel@gmail.com");

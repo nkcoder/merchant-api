@@ -64,9 +64,13 @@ public class IntegrationBaseTest {
     RestAssured.port = port;
 
     // For JWT authorization and authentication
-    userId = userRepository.save(
-        new UserEntity("test0User", "test0@email.com", passwordEncoder.encode("test0Pass!"), LocalDateTime.now())
-    ).getId();
+    UserEntity userForAuth = UserEntity.builder()
+        .userName("test0User")
+        .password(passwordEncoder.encode("test0Pass!"))
+        .email("test0@email.com")
+        .dateRegistered(LocalDateTime.now())
+        .build();
+    userId = userRepository.save(userForAuth).getId();
   }
 
   @AfterEach

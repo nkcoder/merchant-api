@@ -1,5 +1,19 @@
 package my.playground.order;
 
+import static my.playground.product.ProductMockFactory.newProduct;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import my.playground.persistence.OrderRepository;
 import my.playground.persistence.OrdersProductsRepository;
 import my.playground.persistence.entity.OrderEntity;
@@ -11,16 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static my.playground.product.ProductMockFactory.newProduct;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -43,9 +47,14 @@ public class OrderServiceTest {
     when(productService.updateProduct(anyLong(), any(Product.class))).thenReturn(
         mockUpdatedProduct);
 
-    OrderEntity orderEntity = new OrderEntity(10L, LocalDateTime.now(), BigDecimal.valueOf(120.0),
-        1L);
-    orderEntity.setId(100L);
+    OrderEntity orderEntity =
+        OrderEntity.builder()
+            .id(100L)
+            .buyerId(10L)
+            .datePlaced(LocalDateTime.now())
+            .totalAmount(BigDecimal.TEN)
+            .shippingAddressId(1L)
+            .build();
     when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
     when(ordersProductsRepository.saveAll(anyList())).thenReturn(List.of());
 
@@ -61,8 +70,8 @@ public class OrderServiceTest {
   public void shouldReturnOrderById() {
     Long orderId = 2L;
     List<OrdersProductsEntity> ordersProductsEntities = List.of(
-        new OrdersProductsEntity(orderId, 1L),
-        new OrdersProductsEntity(orderId, 2L)
+        OrdersProductsEntity.builder().orderId(orderId).productId(1L).build(),
+        OrdersProductsEntity.builder().orderId(orderId).productId(2L).build()
     );
     when(ordersProductsRepository.findAllByOrderId(orderId)).thenReturn(ordersProductsEntities);
 
@@ -72,7 +81,13 @@ public class OrderServiceTest {
     );
     when(productService.getProducts(List.of(1L, 2L))).thenReturn(products);
 
-    OrderEntity orderEntity = new OrderEntity(2L, LocalDateTime.now(), BigDecimal.valueOf(120.0), 1L);
+    OrderEntity orderEntity =
+        OrderEntity.builder()
+            .buyerId(2L)
+            .datePlaced(LocalDateTime.now())
+            .totalAmount(BigDecimal.valueOf(120.0))
+            .shippingAddressId(1L)
+            .build();
     when(orderRepository.findById(orderId)).thenReturn(Optional.of(orderEntity));
 
     Optional<Order> maybeOrder = orderService.getOrderById(orderId);

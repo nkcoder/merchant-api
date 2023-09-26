@@ -22,8 +22,14 @@ public class UserService implements UserDetailsService {
   private final PasswordEncoder passwordEncoder;
 
   public User register(UserRegistrationReq registrationReq) {
-    UserEntity userEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
-        passwordEncoder.encode(registrationReq.password()), LocalDateTime.now());
+//    UserEntity userEntity = new UserEntity(registrationReq.userName(), registrationReq.email(),
+//        passwordEncoder.encode(registrationReq.password()), LocalDateTime.now());
+    UserEntity userEntity = UserEntity.builder()
+        .userName(registrationReq.userName())
+        .email(registrationReq.email())
+        .password(passwordEncoder.encode(registrationReq.password()))
+        .dateRegistered(LocalDateTime.now())
+        .build();
     UserEntity userSaved = userRepository.save(userEntity);
     return new User(userSaved.getId(), userSaved.getUserName(), userSaved.getEmail(),
         userSaved.getPassword(), userSaved.getDateRegistered());
@@ -34,13 +40,19 @@ public class UserService implements UserDetailsService {
     return userRepository.findByUserName(username).map(
             userEntity -> new org.springframework.security.core.userdetails.User(
                 userEntity.getUserName(), userEntity.getPassword(), List.of()))
-        .orElseThrow(() -> new UsernameNotFoundException("user not exist"));
+        .orElseThrow(() -> new UsernameNotFoundException("user not exist: " + username));
   }
 
   public User updateUser(Long userId, UserUpdateReq updateReq) {
     UserEntity newEntity = userRepository.findById(userId).map(existingUser -> {
-      UserEntity newUser = new UserEntity(updateReq.userName(), updateReq.email(),
-          updateReq.password(), existingUser.getDateRegistered());
+//      UserEntity newUser = new UserEntity(updateReq.userName(), updateReq.email(),
+//          updateReq.password(), existingUser.getDateRegistered());
+      UserEntity newUser = UserEntity.builder()
+          .userName(updateReq.userName())
+          .email(updateReq.email())
+          .password(updateReq.password())
+          .dateRegistered(existingUser.getDateRegistered())
+          .build();
       newUser.setId(userId);
       return newUser;
     }).orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "User not found: " + userId));
