@@ -3,6 +3,7 @@ package my.playground.order;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import my.playground.infrastructure.exception.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,7 @@ public class OrderController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-    Order order = orderService.getOrderById(id)
-        .orElseThrow(() -> new OrderNotFoundException("orderId: " + id));
+    Order order = orderService.getOrderById(id).orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "Order not found: " + id));
     return new ResponseEntity<>(order, HttpStatus.OK);
   }
 

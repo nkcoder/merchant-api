@@ -1,8 +1,10 @@
 package my.playground.user;
 
 import lombok.RequiredArgsConstructor;
+import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.UserRepository;
 import my.playground.persistence.entity.UserEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,7 +43,7 @@ public class UserService implements UserDetailsService {
           updateReq.password(), existingUser.getDateRegistered());
       newUser.setId(userId);
       return newUser;
-    }).orElseThrow(() -> new UserNotFoundException("User doesn't exist: " + userId));
+    }).orElseThrow(() -> AppException.from(HttpStatus.NOT_FOUND, "User not found: " + userId));
 
     UserEntity updatedEntity = userRepository.save(newEntity);
     return new User(userId, updatedEntity.getUserName(), updatedEntity.getEmail(), null,

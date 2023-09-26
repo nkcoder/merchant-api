@@ -4,10 +4,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import my.playground.infrastructure.JsonUtil;
-import my.playground.infrastructure.exception.InvalidCredentialException;
+import my.playground.infrastructure.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -57,7 +58,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       return this.getAuthenticationManager().authenticate(authRequest);
     } catch (IOException e) {
       logger.error("Authenticate request error: {}", e.getMessage());
-      throw new InvalidCredentialException("Invalid token");
+      throw AppException.from(HttpStatus.FORBIDDEN, "Authentication error: " + e.getMessage());
     }
   }
 

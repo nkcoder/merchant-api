@@ -35,27 +35,14 @@ Run one specific test:
 - [x] JWT
 - [x] Dockerise
 - [x] OpenAPI 3
-- [x] TestContainers
+- [x] TestContainers for integration tests
+- [x] PostgreSQL
 
 ### TODO
 
-- [ ] Users API
-  - [ ] delete
-- [ ] Products
-  - [ ] update a product
-  - [ ] delete a product
-
-- [ ] Orders
-  - [ ] create an order
-  - [ ] get an order
-  - [ ] get all orders of a user
-  - [ ] update order status
-  - [ ] cancel an order
-
-- [ ] Refactor Controller tests from integration tests to unit tests
 - [ ] Refactor exception handling
 - [ ] introduce VAVR and refactor in a functional programming way
 - [ ] encrypt the database secret
 - [ ] support GraphQL
-- [ ] API versions
 - [ ] Transactions, notifications, idempotency, stock management
+- [ ] API: aggregate
