@@ -1,13 +1,13 @@
 package my.playground.user;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import io.restassured.http.ContentType;
 import my.playground.IntegrationBaseTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 public class UserControllerTest extends IntegrationBaseTest {
 
@@ -70,6 +70,13 @@ public class UserControllerTest extends IntegrationBaseTest {
         .body(new UserUpdateReq(userId, "newName", "newEmail@test.com", "new!"))
         .contentType(ContentType.JSON).when().put("/v1/users/" + userId).then()
         .statusCode(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  public void shouldReturnAllUsers() {
+    given().header("Authorization", generateJwtToken())
+        .when().get("/v1/users?pageNumber=1&pageSize=10").then()
+        .statusCode(HttpStatus.OK.value());
   }
 
 }
