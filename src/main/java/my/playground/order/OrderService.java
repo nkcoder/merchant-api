@@ -11,6 +11,9 @@ import my.playground.persistence.entity.OrderEntity;
 import my.playground.persistence.entity.OrdersProductsEntity;
 import my.playground.product.Product;
 import my.playground.product.ProductService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,12 +74,30 @@ public class OrderService {
   }
 
   public Optional<Order> getOrderById(Long orderId) {
+    return orderRepository.findById(orderId).map(
+        oe -> new Order(oe.getId(), getProductsByOrderId(orderId), oe.getTotalAmount(),
+            oe.getShippingAddressId(),
+            oe.getDatePlaced()));
+  }
+
+  public List<Order> getOrdersByUser(Long userId, int pageNumber, int pageSize) {
+    return orderRepository.findAllByBuyerId(userId,
+            PageRequest.of(pageNumber, pageSize, Sort.by(Direction.DESC, "datePlaced"))).stream()
+        .map(orderEntity -> {
+          List<Product> products = getProductsByOrderId(orderEntity.getId());
+          return new Order(
+              orderEntity.getId(),
+              products,
+              orderEntity.getTotalAmount(),
+              orderEntity.getShippingAddressId(),
+              orderEntity.getDatePlaced()
+          );
+        }).toList();
+  }
+
+  private List<Product> getProductsByOrderId(Long orderId) {
     List<Long> productIds = ordersProductsRepository.findAllByOrderId(orderId).stream()
         .map(OrdersProductsEntity::getProductId).toList();
-    List<Product> products = productService.getProducts(productIds);
-
-    return orderRepository.findById(orderId).map(
-        oe -> new Order(oe.getId(), products, oe.getTotalAmount(), oe.getShippingAddressId(),
-            oe.getDatePlaced()));
+    return productService.getProducts(productIds);
   }
 }

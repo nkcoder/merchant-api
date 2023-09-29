@@ -25,6 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -103,5 +105,20 @@ public class OrderServiceTest {
 
     Optional<Order> maybeOrder = orderService.getOrderById(orderId);
     assertFalse(maybeOrder.isPresent());
+  }
+
+  @Test
+  public void shouldReturnOrdersOfUser() {
+    Long userId = 3L;
+    when(orderRepository.findAllByBuyerId(anyLong(), any(PageRequest.class))).thenReturn(
+        new PageImpl<>(OrderMockFactory.orderEntitiesForReturn(3))
+    );
+    when(ordersProductsRepository.findAllByOrderId(anyLong())).thenReturn(
+        OrderMockFactory.ordersProductsEntitiesForReturn(3)
+    );
+
+    List<Order> ordersByUser = orderService.getOrdersByUser(userId, 0, 10);
+    assertFalse(ordersByUser.isEmpty());
+    assertEquals(3, ordersByUser.size());
   }
 }

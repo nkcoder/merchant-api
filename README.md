@@ -40,9 +40,7 @@ Run one specific test:
 
 ### TODO
 
-- [ ] Refactor exception handling
 - [ ] introduce VAVR and refactor in a functional programming way
 - [ ] encrypt the database secret
 - [ ] support GraphQL
-- [ ] Transactions, notifications, idempotency, stock management
 - [ ] API: aggregate
