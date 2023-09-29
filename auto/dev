@@ -2,4 +2,6 @@
 
 set -e
 
+./gradlew clean build test
+docker compose build
 docker compose up
