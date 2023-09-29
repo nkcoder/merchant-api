@@ -3,6 +3,23 @@ type Query {
     ordersByUser(userId: ID, pageNumber: Int, pageSize: Int): [Order]
 }
 
+type Mutation {
+    createOrder(createOrderInput: CreateOrderInput!): Order
+}
+
+input CreateOrderInput {
+    buyerId: Int,
+    items: [OrderItemInput],
+    shippingAddressId: Int,
+    totalAmount: Float,
+    datePlaced: String
+}
+
+input OrderItemInput {
+    productId: Int,
+    quantity: Int
+}
+
 type Order {
     id: ID!
     products: [Product]

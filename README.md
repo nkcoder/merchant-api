@@ -9,7 +9,10 @@
   - ![API](./swagger-ui.png)
   - missing `/auth/login` in Swagger: login to get JWT token
 
+## GraphQL API
+
 - [GraphQL Endpoint](http://localhost:8080/graphiql)
+- [GraphQL queries](./graphql-queries.md)
 
 ## How to run
 
@@ -32,13 +35,14 @@ Run one specific test:
 
 - [x] Java 17
 - [x] SpringBoot 3 (Spring 6)
+- [x] PostgreSQL
 - [x] Spring Security
 - [x] Flyway
 - [x] JWT
 - [x] Dockerise
 - [x] OpenAPI 3
 - [x] TestContainers for integration tests
-- [x] PostgreSQL
+- [x] GraphQL API
 
 ### TODO
 
