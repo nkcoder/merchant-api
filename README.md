@@ -21,14 +21,14 @@ Run all the tests
 auto/test
 ```
 
+Run a specific test:
+```bash
+./gradlew test --test my.playground.user.UserControllerTest
+```
+
 Run the application locally:
 ```bash
 auto/dev
-```
-
-Run one specific test:
-```bash
-./gradlew test --test my.playground.user.UserControllerTest
 ```
 
 ### Tech Stack
@@ -48,5 +48,3 @@ Run one specific test:
 
 - [ ] introduce VAVR and refactor in a functional programming way
 - [ ] encrypt the database secret
-- [ ] support GraphQL
-- [ ] API: aggregate
