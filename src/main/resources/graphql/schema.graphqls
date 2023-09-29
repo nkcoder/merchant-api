@@ -1,0 +1,21 @@
+type Query {
+    orderById(id: ID): Order
+    ordersByUser(userId: ID, pageNumber: Int, pageSize: Int): [Order]
+}
+
+type Order {
+    id: ID!
+    products: [Product]
+    totalAmount: Float
+    shippingAddressId: Int
+    datePlaced: String
+}
+
+type Product {
+    id: ID!
+    sellerId: Int
+    productName: String
+    description: String
+    price: Float
+    quantity: Int
+}

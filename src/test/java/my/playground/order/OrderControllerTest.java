@@ -57,7 +57,7 @@ public class OrderControllerTest extends IntegrationBaseTest {
     given()
         .header("Authorization", generateJwtToken())
         .when()
-        .get("/v1/orders/" + order.orderId())
+        .get("/v1/orders/" + order.id())
         .then()
         .statusCode(HttpStatus.OK.value())
         .body("products", hasSize(2));

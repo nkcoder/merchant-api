@@ -9,6 +9,8 @@
   - ![API](./swagger-ui.png)
   - missing `/auth/login` in Swagger: login to get JWT token
 
+- [GraphQL Endpoint](http://localhost:8080/graphiql)
+
 ## How to run
 
 Run all the tests

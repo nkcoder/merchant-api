@@ -38,6 +38,11 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
     implementation("io.vavr:vavr:0.10.4")
 
+    // graphql
+    implementation("com.graphql-java:graphql-java:21.1")
+    implementation("org.springframework.graphql:spring-graphql:1.2.3")
+    implementation("com.graphql-java-kickstart:graphql-java-tools:13.1.0")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

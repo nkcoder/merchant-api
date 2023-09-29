@@ -9,6 +9,9 @@ spring:
     compose:
       skip:
         in-tests: true
+  graphql:
+    graphiql:
+      enabled: true
 
 jwt:
   secret: bXlKV1Qtc2VjcmV0LWtleS0yMDIzLUFVLTAwOTEwLVh+IUAh

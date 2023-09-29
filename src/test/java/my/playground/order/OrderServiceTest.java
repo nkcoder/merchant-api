@@ -65,7 +65,7 @@ public class OrderServiceTest {
         LocalDateTime.now());
     Order order = orderService.createOrder(createOrderReq);
     assertNotNull(order);
-    assertEquals(100L, order.orderId());
+    assertEquals(100L, order.id());
   }
 
   @Test
