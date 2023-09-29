@@ -1,5 +1,15 @@
 package my.playground.product;
 
+import static my.playground.product.ProductMockFactory.newProductEntityForReturn;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import my.playground.persistence.ProductRepository;
 import my.playground.persistence.entity.ProductEntity;
 import org.junit.jupiter.api.Test;
@@ -7,15 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import static my.playground.product.ProductMockFactory.newProductEntityForReturn;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -31,9 +34,9 @@ public class ProductServiceTest {
     List<ProductEntity> productEntities = List.of(
         newProductEntityForReturn("product1", "description1"),
         newProductEntityForReturn("product2", "description2"));
-    when(productRepository.findAll()).thenReturn(productEntities);
-
-    List<Product> products = productService.getAllProducts();
+    when(productRepository.findAll(any(PageRequest.class))).thenReturn(
+        new PageImpl<>(productEntities));
+    List<Product> products = productService.getAllProducts(0, 10);
     assertEquals(2, products.size());
   }
 

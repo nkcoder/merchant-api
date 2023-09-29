@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import my.playground.infrastructure.exception.AppException;
 import my.playground.persistence.ProductRepository;
 import my.playground.persistence.entity.ProductEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,12 @@ public class ProductService {
 
   private final ProductRepository productRepository;
 
-  public List<Product> getAllProducts() {
-    return Lists.newArrayList(productRepository.findAll()).stream().map(
-        pe -> new Product(pe.getId(), pe.getSellerId(), pe.getProductName(), pe.getDescription(),
-            pe.getPrice(), pe.getQuantity())).collect(Collectors.toList());
+  public List<Product> getAllProducts(int pageNumber, int pageSize) {
+    return Lists.newArrayList(productRepository.findAll(PageRequest.of(pageNumber, pageSize)))
+        .stream().map(
+            pe -> new Product(pe.getId(), pe.getSellerId(), pe.getProductName(),
+                pe.getDescription(),
+                pe.getPrice(), pe.getQuantity())).toList();
   }
 
   public Optional<Product> getProductById(Long productId) {
